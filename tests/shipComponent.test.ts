@@ -27,15 +27,16 @@ class Ship {
   }
   hit() {
     if (this.hitTimes < this.length) this.hitTimes++;
+    if (this.length > this.hitTimes) {
+      this.isSunkStatus = false;
+    } else {
+      this.isSunkStatus = true;
+    }
   }
   isSunk() {
-    if (this.length > this.hitTimes) {
-      return (this.isSunkStatus = false);
-    }
-    return (this.isSunkStatus = true);
+    return this.isSunkStatus;
   }
 }
-
 test('isSunk from Ship class', () => {
   const ship = new Ship();
   expect(ship.hitTimes).toBe(0);

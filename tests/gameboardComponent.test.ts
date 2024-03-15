@@ -86,34 +86,49 @@ class GameBoard {
   }
   //    Game boards should be able to report whether or not all of their ships have been sunk.
   isFleetAllSunk() {
-    // how??????????????
-    // first find all Ship instances
-    // store these instances inside an array
-    // loop throught the array to check if one of these instances.isSunk() return false -> return false
-    // else return true;
+    const arr = [];
+    for (let i = 0; i < this.height; i++) {
+      for (let j = 0; j < this.width; j++) {
+        if (this.map[i][j] instanceof Ship) {
+          const currentShip = this.map[i][j];
+          console.log(currentShip);
+          if (currentShip.isSunk() === false) return false;
+          //  arr.push(currentShip);
+        }
+      }
+    }
+    //  const filterArr = arr.filter((ship, index) => arr.indexOf(ship) === index); // the trick is because indexOf always return the first occurrence
+
+    //  console.log(filterArr);
+    //  filterArr.forEach((ship: Ship) => {
+
+    //    if (ship.isSunk() === false) return false;
+    //  });
+    return true;
   }
 }
 const gameBoard = new GameBoard(5);
-gameBoard.placeShip(0, 0, 2, 'vertical');
-test('placeShip function test ', () => {
-  console.log(gameBoard.map);
-  expect(gameBoard.map[0][0]).toStrictEqual(new Ship(2));
-  expect(gameBoard.map[0][1]).toStrictEqual(new Ship(2));
-});
+gameBoard.placeShip(0, 0, 2, 'horizontal');
+gameBoard.placeShip(2, 0, 3, 'horizontal');
+
 test('function receive hit from GameBoard class', () => {
   gameBoard.receiveAttack(0, 0);
-  gameBoard.receiveAttack(0, 1);
-  gameBoard.receiveAttack(0, 2); // missing attack
+  gameBoard.receiveAttack(1, 0);
+  gameBoard.receiveAttack(0, 0); // missing attack
   expect(gameBoard.map[0][0].hitTimes).toBe(2);
 });
-gameBoard.receiveAttack(0, 2);
+//real attack
+gameBoard.receiveAttack(0, 0);
+gameBoard.receiveAttack(1, 0);
+console.log(gameBoard.map[0][0]);
+
+gameBoard.receiveAttack(3, 0);
+//missing attack
 gameBoard.receiveAttack(1, 3);
 gameBoard.receiveAttack(3, 3);
-console.log(gameBoard.getMissingAttacksCoordinates());
 
 test('function get missing attack return array of coordinates', () => {
   expect(gameBoard.getMissingAttacksCoordinates()).toStrictEqual([
-    [0, 2],
     [1, 3],
     [3, 3],
   ]);
@@ -123,9 +138,12 @@ test('isFleetAllSunk() test', () => {
   expect(gameBoard.isFleetAllSunk()).toBe(false);
 });
 
-test.skip('isFleetAllSunk() test for true return', () => {
+test('isFleetAllSunk() test for true return', () => {
   gameBoard.receiveAttack(0, 0);
-  gameBoard.receiveAttack(0, 1);
+  gameBoard.receiveAttack(1, 0);
+  gameBoard.receiveAttack(2, 0);
+  gameBoard.receiveAttack(3, 0);
+  gameBoard.receiveAttack(4, 0);
 
-  expect(gameBoard.isFleetAllSunk()).toBe(false);
+  expect(gameBoard.isFleetAllSunk()).toBe(true);
 });
