@@ -12,8 +12,8 @@
     the attack hit a ship and then sends the ‘hit’ function to the correct ship, 
     or records the coordinates of the missed shot.
     
-    
-    Game boards should be able to report whether or not all of their ships have been sunk.
+        Game boards should be able to report whether or not all of their ships have been sunk.
+
     
     * 
  */
@@ -84,6 +84,14 @@ class GameBoard {
     }
     return arr;
   }
+  //    Game boards should be able to report whether or not all of their ships have been sunk.
+  isFleetAllSunk() {
+    // how??????????????
+    // first find all Ship instances
+    // store these instances inside an array
+    // loop throught the array to check if one of these instances.isSunk() return false -> return false
+    // else return true;
+  }
 }
 const gameBoard = new GameBoard(5);
 gameBoard.placeShip(0, 0, 2, 'vertical');
@@ -109,4 +117,15 @@ test('function get missing attack return array of coordinates', () => {
     [1, 3],
     [3, 3],
   ]);
+});
+
+test('isFleetAllSunk() test', () => {
+  expect(gameBoard.isFleetAllSunk()).toBe(false);
+});
+
+test.skip('isFleetAllSunk() test for true return', () => {
+  gameBoard.receiveAttack(0, 0);
+  gameBoard.receiveAttack(0, 1);
+
+  expect(gameBoard.isFleetAllSunk()).toBe(false);
 });
