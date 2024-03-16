@@ -18,7 +18,7 @@
     * 
  */
 import Ship from '../src/shipComponent';
-class GameBoard {
+export default class GameBoard {
   height: number;
   width: number;
   size: number;

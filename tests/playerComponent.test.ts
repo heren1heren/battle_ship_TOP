@@ -21,20 +21,30 @@ export default class Player {
 
 const player = new Player(new GameBoard(5));
 const opponent = new GameBoard(5);
-test('playTurn method with an opponent game board', () => {
-  //   player.playTurn(opponent, 3, 3);
-  player.playTurn(opponent, 4, 4);
-  expect(opponent.getMissingAttacksCoordinates()).toStrictEqual([[4, 4]]);
-});
+
 test('playTurn method with an opponent game board(having a ship)', () => {
   //   player.playTurn(opponent, 3, 3);
   player.playTurn(opponent, 4, 4);
   opponent.placeShip(0, 0, new Ship(2), 'horizontal');
   player.playTurn(opponent, 0, 0);
+  player.playTurn(opponent, 1, 0);
+  player.playTurn(opponent, 2, 0);
 
-  //   player.playTurn(opponent, 1, 0);
-  opponent.receiveAttack(0, 0);
-  console.log(opponent.map[1][0]);
-
-  expect(opponent.getMissingAttacksCoordinates()).toStrictEqual([[4, 4]]);
+  expect(opponent.getMissingAttacksCoordinates()).toStrictEqual([
+    [2, 0],
+    [4, 4],
+  ]);
 });
+
+export class Computer {
+  gameBoard: GameBoard;
+  constructor(gameBoard: GameBoard) {
+    this.gameBoard = gameBoard;
+  }
+
+  playRanDom(opponentGameBoard: GameBoard) {
+    // using Math.random to choose a random coordinate,
+    // using if else statement to stop computer from playing at the same spots twice
+    // Extra credit: making the computer 'smarter' after attacking successfully -> because of  the successful attack -> know that next possible spot is horizontal/vertical adjecent
+  }
+}

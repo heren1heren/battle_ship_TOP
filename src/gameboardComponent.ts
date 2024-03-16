@@ -1,5 +1,5 @@
 import Ship from './shipComponent';
-class GameBoard {
+export default class GameBoard {
   height: number;
   width: number;
   size: number;
