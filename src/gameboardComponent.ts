@@ -1,4 +1,4 @@
-import Ship from '../src/shipComponent';
+import Ship from './shipComponent';
 export default class GameBoard {
   height: number;
   width: number;
@@ -17,34 +17,55 @@ export default class GameBoard {
     ];
   }
 
-  placeShip(xCor: number, yCor: number, shipLength, direction) {
+  placeShip(
+    xCor: number,
+    yCor: number,
+    newShip: Ship,
+    direction:
+      | 'horizontal left'
+      | 'vertical down'
+      | 'horizontal right'
+      | 'vertical up'
+  ) {
     // xCor and yCor are input from User Interface
-    if (this.map[xCor][yCor] !== 'empty') return;
-    const newShip = new Ship(shipLength);
+    if (this.map[yCor][xCor] !== 'empty') return;
 
-    this.map[xCor][yCor] = newShip;
-    console.log(shipLength);
+    this.map[yCor][xCor] = newShip;
 
-    for (let i = 0; i < shipLength; i++) {
-      if (direction === 'horizontal') {
-        this.map[xCor][yCor] = newShip;
+    for (let i = 0; i < newShip.length; i++) {
+      if (direction === 'horizontal right') {
+        this.map[yCor][xCor] = newShip;
         xCor++;
-      } else if (direction === 'vertical') {
-        this.map[xCor][yCor] = newShip;
+      } else if (direction === 'horizontal left') {
+        this.map[yCor][xCor] = newShip;
+        xCor--;
+        //
+      } else if (direction === 'vertical down') {
+        this.map[yCor][xCor] = newShip;
         yCor++;
+        //
+      } else if (direction === 'vertical up') {
+        this.map[yCor][xCor] = newShip;
+        yCor--;
         //
       }
     }
   }
   receiveAttack(xCor: number, yCor: number) {
     //[UI] class need to prevent receiveAttach when there was an attack or missing shot  in this coordinate already.
-    //  if (xCor > this.height || yCor > this.width) return;
-    if (this.map[xCor][yCor] === 'empty') {
-      this.map[xCor][yCor] = 'missingAttack';
+    /**
+    *  Game boards should have a receiveAttack function
+     that takes a pair of coordinates, determines whether or not 
+     the attack hit a ship and then sends the ‘hit’ function to the correct ship, 
+     or records the coordinates of the missed shot.
+    */
+    // if (xCor > this.height || yCor > this.width) return;
+    if (this.map[yCor][xCor] === 'empty') {
+      this.map[yCor][xCor] = 'missingAttack';
       // record coordinate of the missed shot
       // [UI] display missed shot
-    } else if (this.map[xCor][yCor] instanceof Ship) {
-      this.map[xCor][yCor].hit();
+    } else if (this.map[yCor][xCor] instanceof Ship) {
+      this.map[yCor][xCor].hit();
     }
   }
   //Game boards should keep track of missed attacks so they can display them properly.
@@ -53,7 +74,7 @@ export default class GameBoard {
     for (let i = 0; i < this.width; i++) {
       for (let j = 0; j < this.height; j++) {
         if (this.map[i][j] === 'missingAttack') {
-          arr.push([i, j]);
+          arr.push([j, i]);
         }
       }
     }
@@ -61,15 +82,17 @@ export default class GameBoard {
   }
   //    Game boards should be able to report whether or not all of their ships have been sunk.
   isFleetAllSunk() {
+    const arr = [];
     for (let i = 0; i < this.height; i++) {
       for (let j = 0; j < this.width; j++) {
         if (this.map[i][j] instanceof Ship) {
           const currentShip = this.map[i][j];
-          //  console.log(currentShip);
+          console.log(currentShip);
           if (currentShip.isSunk() === false) return false;
         }
       }
     }
+
     return true;
   }
 }

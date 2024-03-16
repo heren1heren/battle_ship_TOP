@@ -20,6 +20,7 @@ class Ship {
   length: number;
   hitTimes: number;
   isSunkStatus: boolean;
+
   constructor(length: number = 1) {
     this.length = length;
     this.hitTimes = 0;

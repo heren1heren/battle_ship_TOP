@@ -18,7 +18,7 @@
     * 
  */
 import Ship from '../src/shipComponent';
-class GameBoard {
+export default class GameBoard {
   height: number;
   width: number;
   size: number;
@@ -36,34 +36,61 @@ class GameBoard {
     ];
   }
 
-  placeShip(xCor: number, yCor: number, shipLength, direction) {
+  placeShip(
+    xCor: number,
+    yCor: number,
+    newShip: Ship,
+    direction:
+      | 'horizontal left'
+      | 'vertical down'
+      | 'horizontal right'
+      | 'vertical up'
+  ) {
     // xCor and yCor are input from User Interface
-    if (this.map[xCor][yCor] !== 'empty') return;
-    const newShip = new Ship(shipLength);
+    if (this.map[yCor][xCor] !== 'empty') return;
 
-    this.map[xCor][yCor] = newShip;
-    console.log(shipLength);
+    this.map[yCor][xCor] = newShip;
 
-    for (let i = 0; i < shipLength; i++) {
-      if (direction === 'horizontal') {
-        this.map[xCor][yCor] = newShip;
+    for (let i = 0; i < newShip.length; i++) {
+      if (direction === 'horizontal right') {
+        this.map[yCor][xCor] = newShip;
         xCor++;
-      } else if (direction === 'vertical') {
-        this.map[xCor][yCor] = newShip;
+      } else if (direction === 'horizontal left') {
+        this.map[yCor][xCor] = newShip;
+        xCor--;
+        //
+      } else if (direction === 'vertical down') {
+        this.map[yCor][xCor] = newShip;
         yCor++;
+        //
+      } else if (direction === 'vertical up') {
+        this.map[yCor][xCor] = newShip;
+        yCor--;
         //
       }
     }
   }
   receiveAttack(xCor: number, yCor: number) {
     //[UI] class need to prevent receiveAttach when there was an attack or missing shot  in this coordinate already.
+<<<<<<< HEAD
     //  if (xCor > this.height || yCor > this.width) return;
     if (this.map[xCor][yCor] === 'empty') {
       this.map[xCor][yCor] = 'missingAttack';
+=======
+    /**
+    *  Game boards should have a receiveAttack function
+     that takes a pair of coordinates, determines whether or not 
+     the attack hit a ship and then sends the ‘hit’ function to the correct ship, 
+     or records the coordinates of the missed shot.
+    */
+    // if (xCor > this.height || yCor > this.width) return;
+    if (this.map[yCor][xCor] === 'empty') {
+      this.map[yCor][xCor] = 'missingAttack';
+>>>>>>> f0dfeafd30794553b392158bc2c8503992f03f92
       // record coordinate of the missed shot
       // [UI] display missed shot
-    } else if (this.map[xCor][yCor] instanceof Ship) {
-      this.map[xCor][yCor].hit();
+    } else if (this.map[yCor][xCor] instanceof Ship) {
+      this.map[yCor][xCor].hit();
     }
   }
   //Game boards should keep track of missed attacks so they can display them properly.
@@ -72,7 +99,7 @@ class GameBoard {
     for (let i = 0; i < this.width; i++) {
       for (let j = 0; j < this.height; j++) {
         if (this.map[i][j] === 'missingAttack') {
-          arr.push([i, j]);
+          arr.push([j, i]);
         }
       }
     }
@@ -89,13 +116,39 @@ class GameBoard {
         }
       }
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> f0dfeafd30794553b392158bc2c8503992f03f92
     return true;
   }
 }
 const gameBoard = new GameBoard(5);
+<<<<<<< HEAD
 gameBoard.placeShip(0, 0, 2, 'horizontal');
 gameBoard.placeShip(2, 0, 3, 'horizontal');
 gameBoard.placeShip(3, 3, 2, 'vertical');
+=======
+gameBoard.placeShip(0, 0, new Ship(2), 'horizontal');
+gameBoard.placeShip(2, 0, new Ship(3), 'horizontal');
+console.log(gameBoard.map[0][1]);
+
+test('function receive hit from GameBoard class', () => {
+  gameBoard.receiveAttack(0, 0);
+  gameBoard.receiveAttack(1, 0);
+  gameBoard.receiveAttack(0, 0); // missing attack
+  expect(gameBoard.map[0][0].hitTimes).toBe(2);
+});
+
+test('function get missing attack return array of coordinates', () => {
+  gameBoard.receiveAttack(1, 3);
+  gameBoard.receiveAttack(3, 3);
+  expect(gameBoard.getMissingAttacksCoordinates()).toStrictEqual([
+    [1, 3],
+    [3, 3],
+  ]);
+});
+>>>>>>> f0dfeafd30794553b392158bc2c8503992f03f92
 
 test('isFleetAllSunk() test', () => {
   expect(gameBoard.isFleetAllSunk()).toBe(false);
