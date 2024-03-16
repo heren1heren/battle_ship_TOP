@@ -36,20 +36,23 @@ class GameBoard {
     ];
   }
 
-  placeShip(xCor: number, yCor: number, shipLength, direction) {
+  placeShip(
+    xCor: number,
+    yCor: number,
+    newShip: Ship,
+    direction: 'horizontal' | 'vertical'
+  ) {
     // xCor and yCor are input from User Interface
-    if (this.map[xCor][yCor] !== 'empty') return;
-    const newShip = new Ship(shipLength);
+    if (this.map[yCor][xCor] !== 'empty') return;
 
-    this.map[xCor][yCor] = newShip;
-    console.log(shipLength);
+    this.map[yCor][xCor] = newShip;
 
-    for (let i = 0; i < shipLength; i++) {
+    for (let i = 0; i < newShip.length; i++) {
       if (direction === 'horizontal') {
-        this.map[xCor][yCor] = newShip;
+        this.map[yCor][xCor] = newShip;
         xCor++;
       } else if (direction === 'vertical') {
-        this.map[xCor][yCor] = newShip;
+        this.map[yCor][xCor] = newShip;
         yCor++;
         //
       }
@@ -63,13 +66,13 @@ class GameBoard {
      the attack hit a ship and then sends the ‘hit’ function to the correct ship, 
      or records the coordinates of the missed shot.
     */
-    if (xCor > this.height || yCor > this.width) return;
-    if (this.map[xCor][yCor] === 'empty') {
-      this.map[xCor][yCor] = 'missingAttack';
+    // if (xCor > this.height || yCor > this.width) return;
+    if (this.map[yCor][xCor] === 'empty') {
+      this.map[yCor][xCor] = 'missingAttack';
       // record coordinate of the missed shot
       // [UI] display missed shot
-    } else if (this.map[xCor][yCor] instanceof Ship) {
-      this.map[xCor][yCor].hit();
+    } else if (this.map[yCor][xCor] instanceof Ship) {
+      this.map[yCor][xCor].hit();
     }
   }
   //Game boards should keep track of missed attacks so they can display them properly.
@@ -78,7 +81,7 @@ class GameBoard {
     for (let i = 0; i < this.width; i++) {
       for (let j = 0; j < this.height; j++) {
         if (this.map[i][j] === 'missingAttack') {
-          arr.push([i, j]);
+          arr.push([j, i]);
         }
       }
     }
@@ -93,23 +96,17 @@ class GameBoard {
           const currentShip = this.map[i][j];
           console.log(currentShip);
           if (currentShip.isSunk() === false) return false;
-          //  arr.push(currentShip);
         }
       }
     }
-    //  const filterArr = arr.filter((ship, index) => arr.indexOf(ship) === index); // the trick is because indexOf always return the first occurrence
 
-    //  console.log(filterArr);
-    //  filterArr.forEach((ship: Ship) => {
-
-    //    if (ship.isSunk() === false) return false;
-    //  });
     return true;
   }
 }
 const gameBoard = new GameBoard(5);
-gameBoard.placeShip(0, 0, 2, 'horizontal');
-gameBoard.placeShip(2, 0, 3, 'horizontal');
+gameBoard.placeShip(0, 0, new Ship(2), 'horizontal');
+gameBoard.placeShip(2, 0, new Ship(3), 'horizontal');
+console.log(gameBoard.map[0][1]);
 
 test('function receive hit from GameBoard class', () => {
   gameBoard.receiveAttack(0, 0);
@@ -117,17 +114,10 @@ test('function receive hit from GameBoard class', () => {
   gameBoard.receiveAttack(0, 0); // missing attack
   expect(gameBoard.map[0][0].hitTimes).toBe(2);
 });
-//real attack
-gameBoard.receiveAttack(0, 0);
-gameBoard.receiveAttack(1, 0);
-console.log(gameBoard.map[0][0]);
-
-gameBoard.receiveAttack(3, 0);
-//missing attack
-gameBoard.receiveAttack(1, 3);
-gameBoard.receiveAttack(3, 3);
 
 test('function get missing attack return array of coordinates', () => {
+  gameBoard.receiveAttack(1, 3);
+  gameBoard.receiveAttack(3, 3);
   expect(gameBoard.getMissingAttacksCoordinates()).toStrictEqual([
     [1, 3],
     [3, 3],
