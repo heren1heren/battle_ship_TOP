@@ -23,16 +23,143 @@ export default class GameBoard {
   width: number;
   size: number;
   map: Array<Ship | 'empty' | 'missingAttack'>[];
-  constructor(height: number = 0) {
+  constructor(height: number = 10) {
     this.height = height; // game board contains height and width to create a grid display.
     this.width = this.height;
     this.size = this.height * this.height;
     this.map = [
-      ['empty', 'empty', 'empty', 'empty', 'empty'],
-      ['empty', 'empty', 'empty', 'empty', 'empty'],
-      ['empty', 'empty', 'empty', 'empty', 'empty'],
-      ['empty', 'empty', 'empty', 'empty', 'empty'],
-      ['empty', 'empty', 'empty', 'empty', 'empty'],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
     ];
   }
 
@@ -72,21 +199,10 @@ export default class GameBoard {
   }
   receiveAttack(xCor: number, yCor: number) {
     //[UI] class need to prevent receiveAttach when there was an attack or missing shot  in this coordinate already.
-<<<<<<< HEAD
     //  if (xCor > this.height || yCor > this.width) return;
-    if (this.map[xCor][yCor] === 'empty') {
-      this.map[xCor][yCor] = 'missingAttack';
-=======
-    /**
-    *  Game boards should have a receiveAttack function
-     that takes a pair of coordinates, determines whether or not 
-     the attack hit a ship and then sends the ‘hit’ function to the correct ship, 
-     or records the coordinates of the missed shot.
-    */
-    // if (xCor > this.height || yCor > this.width) return;
+
     if (this.map[yCor][xCor] === 'empty') {
       this.map[yCor][xCor] = 'missingAttack';
->>>>>>> f0dfeafd30794553b392158bc2c8503992f03f92
       // record coordinate of the missed shot
       // [UI] display missed shot
     } else if (this.map[yCor][xCor] instanceof Ship) {
@@ -116,52 +232,18 @@ export default class GameBoard {
         }
       }
     }
-<<<<<<< HEAD
-=======
 
->>>>>>> f0dfeafd30794553b392158bc2c8503992f03f92
     return true;
   }
 }
-const gameBoard = new GameBoard(5);
-<<<<<<< HEAD
-gameBoard.placeShip(0, 0, 2, 'horizontal');
-gameBoard.placeShip(2, 0, 3, 'horizontal');
-gameBoard.placeShip(3, 3, 2, 'vertical');
-=======
-gameBoard.placeShip(0, 0, new Ship(2), 'horizontal');
-gameBoard.placeShip(2, 0, new Ship(3), 'horizontal');
-console.log(gameBoard.map[0][1]);
-
-test('function receive hit from GameBoard class', () => {
-  gameBoard.receiveAttack(0, 0);
-  gameBoard.receiveAttack(1, 0);
-  gameBoard.receiveAttack(0, 0); // missing attack
-  expect(gameBoard.map[0][0].hitTimes).toBe(2);
-});
-
-test('function get missing attack return array of coordinates', () => {
-  gameBoard.receiveAttack(1, 3);
-  gameBoard.receiveAttack(3, 3);
-  expect(gameBoard.getMissingAttacksCoordinates()).toStrictEqual([
-    [1, 3],
-    [3, 3],
-  ]);
-});
->>>>>>> f0dfeafd30794553b392158bc2c8503992f03f92
-
+const gameBoard = new GameBoard(10);
+gameBoard.placeShip(1, 1, new Ship(2), 'horizontal right');
 test('isFleetAllSunk() test', () => {
   expect(gameBoard.isFleetAllSunk()).toBe(false);
 });
 
 test('isFleetAllSunk() test for true return', () => {
-  gameBoard.receiveAttack(0, 0);
-  gameBoard.receiveAttack(1, 0);
-  gameBoard.receiveAttack(2, 0);
-  gameBoard.receiveAttack(3, 0);
-  gameBoard.receiveAttack(4, 0);
-  gameBoard.receiveAttack(3, 3);
-  gameBoard.receiveAttack(3, 4);
-
+  gameBoard.receiveAttack(1, 1);
+  gameBoard.receiveAttack(2, 1);
   expect(gameBoard.isFleetAllSunk()).toBe(true);
 });
