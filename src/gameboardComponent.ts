@@ -21,7 +21,11 @@ export default class GameBoard {
     xCor: number,
     yCor: number,
     newShip: Ship,
-    direction: 'horizontal' | 'vertical'
+    direction:
+      | 'horizontal left'
+      | 'vertical down'
+      | 'horizontal right'
+      | 'vertical up'
   ) {
     // xCor and yCor are input from User Interface
     if (this.map[yCor][xCor] !== 'empty') return;
@@ -29,19 +33,32 @@ export default class GameBoard {
     this.map[yCor][xCor] = newShip;
 
     for (let i = 0; i < newShip.length; i++) {
-      if (direction === 'horizontal') {
+      if (direction === 'horizontal right') {
         this.map[yCor][xCor] = newShip;
         xCor++;
-      } else if (direction === 'vertical') {
+      } else if (direction === 'horizontal left') {
+        this.map[yCor][xCor] = newShip;
+        xCor--;
+        //
+      } else if (direction === 'vertical down') {
         this.map[yCor][xCor] = newShip;
         yCor++;
+        //
+      } else if (direction === 'vertical up') {
+        this.map[yCor][xCor] = newShip;
+        yCor--;
         //
       }
     }
   }
   receiveAttack(xCor: number, yCor: number) {
     //[UI] class need to prevent receiveAttach when there was an attack or missing shot  in this coordinate already.
-
+    /**
+    *  Game boards should have a receiveAttack function
+     that takes a pair of coordinates, determines whether or not 
+     the attack hit a ship and then sends the ‘hit’ function to the correct ship, 
+     or records the coordinates of the missed shot.
+    */
     // if (xCor > this.height || yCor > this.width) return;
     if (this.map[yCor][xCor] === 'empty') {
       this.map[yCor][xCor] = 'missingAttack';
@@ -65,6 +82,7 @@ export default class GameBoard {
   }
   //    Game boards should be able to report whether or not all of their ships have been sunk.
   isFleetAllSunk() {
+    const arr = [];
     for (let i = 0; i < this.height; i++) {
       for (let j = 0; j < this.width; j++) {
         if (this.map[i][j] instanceof Ship) {

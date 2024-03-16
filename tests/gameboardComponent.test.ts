@@ -40,7 +40,11 @@ export default class GameBoard {
     xCor: number,
     yCor: number,
     newShip: Ship,
-    direction: 'horizontal' | 'vertical'
+    direction:
+      | 'horizontal left'
+      | 'vertical down'
+      | 'horizontal right'
+      | 'vertical up'
   ) {
     // xCor and yCor are input from User Interface
     if (this.map[yCor][xCor] !== 'empty') return;
@@ -48,12 +52,20 @@ export default class GameBoard {
     this.map[yCor][xCor] = newShip;
 
     for (let i = 0; i < newShip.length; i++) {
-      if (direction === 'horizontal') {
+      if (direction === 'horizontal right') {
         this.map[yCor][xCor] = newShip;
         xCor++;
-      } else if (direction === 'vertical') {
+      } else if (direction === 'horizontal left') {
+        this.map[yCor][xCor] = newShip;
+        xCor--;
+        //
+      } else if (direction === 'vertical down') {
         this.map[yCor][xCor] = newShip;
         yCor++;
+        //
+      } else if (direction === 'vertical up') {
+        this.map[yCor][xCor] = newShip;
+        yCor--;
         //
       }
     }

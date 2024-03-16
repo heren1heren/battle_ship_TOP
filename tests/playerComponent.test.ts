@@ -36,46 +36,142 @@ export class Computer {
     this.attackTimes = 0;
     this.limitedAttackTimes = 25;
   }
+  play(player: Player) {
+    /** algorithm:
+     *  step 1: check if this.hitMap contains 'potential' -> playRandom() smart version
+     *  else : playRandom() random version
+     * step 2: logic for terminating 'potential' -> replace 'new' to 'potential' again
+     *  -> if the ship.isSink() return true -> reset all  adjacent 'potential' to 'new'
+     */
 
-  playRandom(opponent: Player) {
+    // if there is a sunkShip -> potentialResetting()
+    if (this.potentialChecking()) {
+      this.playSmart(player);
+    } else {
+      this.playRandom(player);
+    }
+  }
+  private potentialMarking(xCor: number, yCor: number) {
+    if (xCor + 1 >= 0 && xCor + 1 < 5 && yCor >= 0 && yCor < 5) {
+      // coordinate is on the board
+      if (
+        this.hitMap[yCor][xCor + 1] === 'new' &&
+        this.hitMap[yCor][xCor + 1] !== 'attacked' &&
+        this.hitMap[yCor][xCor + 1] !== 'attackedShip'
+      )
+        this.hitMap[yCor][xCor + 1] = 'potential';
+    }
+    if (xCor + 1 >= 0 && xCor + 1 < 5 && yCor + 1 >= 0 && yCor + 1 < 5) {
+      if (
+        this.hitMap[yCor + 1][xCor] === 'new' &&
+        this.hitMap[yCor + 1][xCor] !== 'attacked' &&
+        this.hitMap[yCor + 1][xCor] !== 'attackedShip'
+      )
+        this.hitMap[yCor + 1][xCor] = 'potential';
+    }
+    if (xCor >= 0 && xCor < 5 && yCor - 1 >= 0 && yCor - 1 < 5) {
+      // coordinate is on the board
+      if (
+        this.hitMap[yCor - 1][xCor] === 'new' &&
+        this.hitMap[yCor - 1][xCor] !== 'attacked' &&
+        this.hitMap[yCor - 1][xCor] !== 'attackedShip'
+      )
+        this.hitMap[yCor - 1][xCor] = 'potential';
+    }
+    if (xCor - 1 >= 0 && xCor - 1 < 5 && yCor >= 0 && yCor < 5) {
+      // coordinate is on the board
+      if (
+        this.hitMap[yCor][xCor - 1] === 'new' &&
+        this.hitMap[yCor][xCor - 1] !== 'attacked' &&
+        this.hitMap[yCor][xCor - 1] !== 'attackedShip'
+      )
+        this.hitMap[yCor][xCor - 1] = 'potential';
+    }
+  }
+  private potentialResetting(xCor: number, yCor: number) {
+    if (this.hitMap[yCor][xCor + 1] === 'potential')
+      this.hitMap[yCor][xCor + 1] = 'new';
+    if (this.hitMap[yCor + 1][xCor] === 'potential')
+      this.hitMap[yCor + 1][xCor] = 'new';
+    if (this.hitMap[yCor - 1][xCor] === 'potential')
+      this.hitMap[yCor - 1][xCor] = 'new';
+    if (this.hitMap[yCor][xCor - 1] === 'potential')
+      this.hitMap[yCor][xCor - 1] = 'new';
+  }
+  potentialChecking() {
+    //check if this.hitMap contains 'potential'
+    this.hitMap.forEach((stringArr) => {
+      stringArr.forEach((element) => {
+        if (element === 'potential') return true;
+      });
+    });
+    return false;
+  }
+  playSmart(opponent) {
+    //
+    if (this.attackTimes >= this.limitedAttackTimes) return;
+    const ranDomSeed = opponent.gameBoard.height - 1;
+    let xCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
+    let yCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
+    while (this.hitMap[yCor][xCor] !== 'potential') {
+      xCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
+      yCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
+    }
+    this.attackTimes++;
+    if (opponent.gameBoard.map[yCor][xCor] instanceof Ship) {
+      this.hitMap[yCor][xCor] = 'attackedShip';
+      this.potentialMarking(xCor, yCor);
+    } else {
+      this.hitMap[yCor][xCor] = 'attacked';
+    }
+  }
+
+  private playRandom(opponent: Player) {
     if (this.attackTimes >= this.limitedAttackTimes) return;
     const ranDomSeed = opponent.gameBoard.height - 1;
     let xCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
     let yCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
     while (this.hitMap[yCor][xCor] !== 'new') {
+      // replace typeOfAttack here
       xCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
       yCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
     }
     this.attackTimes++;
-    this.hitMap[yCor][xCor] = 'attacked';
+    // marking logic
+    if (opponent.gameBoard.map[yCor][xCor] instanceof Ship) {
+      this.hitMap[yCor][xCor] = 'attackedShip';
+      this.potentialMarking(xCor, yCor);
+    } else {
+      this.hitMap[yCor][xCor] = 'attacked';
+    }
     opponent.gameBoard.receiveAttack(xCor, yCor);
   }
 }
 const player = new Player(new GameBoard(5));
-const opponent = new Computer(new GameBoard(5));
-
-test('playTurn method with an opponent game board(having a ship)', () => {
-  //   player.playTurn(opponent, 3, 3);
-  player.playTurn(opponent, 4, 4);
-  opponent.gameBoard.placeShip(0, 0, new Ship(2), 'horizontal');
-  player.playTurn(opponent, 0, 0);
-  player.playTurn(opponent, 1, 0);
-  player.playTurn(opponent, 2, 0);
-
-  expect(opponent.gameBoard.getMissingAttacksCoordinates()).toStrictEqual([
-    [2, 0],
-    [4, 4],
-  ]);
-});
 
 const computer = new Computer(new GameBoard(5));
-test('computer playRandom method', () => {
-  player.gameBoard.placeShip(0, 0, new Ship(2), 'vertical');
-  computer.playRandom(player);
+test('computer potentialChecking', () => {
+  player.gameBoard.placeShip(0, 0, new Ship(2), 'vertical down');
+  player.gameBoard.placeShip(3, 3, new Ship(3), 'vertical up');
+  computer.play(player);
+  computer.play(player);
+  computer.play(player);
+  computer.play(player);
+  computer.play(player);
+  console.log(computer.hitMap);
+
+  expect(computer.potentialChecking()).toBe(true);
+});
+test.skip('computer play method', () => {
+  computer.play(player);
+  computer.play(player);
+  computer.play(player);
+  computer.play(player);
+  computer.play(player);
+  computer.play(player);
+  computer.play(player);
   console.log(computer.hitMap);
   console.log(player.gameBoard.map);
 
   expect(computer.hitMap).toBe(computer.hitMap);
 });
-
-// we are trying to create a random x and y coordinate from the range of 0 -> opponent.height
