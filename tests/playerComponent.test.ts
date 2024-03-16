@@ -14,37 +14,68 @@ export default class Player {
     this.gameBoard = gameBoard;
   }
 
-  playTurn(opponentGameBoard: GameBoard, xCor: number, yCor: number) {
-    opponentGameBoard.receiveAttack(xCor, yCor);
+  playTurn(opponent: Computer, xCor: number, yCor: number) {
+    opponent.gameBoard.receiveAttack(xCor, yCor);
   }
 }
 
+export class Computer {
+  gameBoard: GameBoard;
+  hitMap: string[][];
+  attackTimes: number;
+  limitedAttackTimes: number;
+  constructor(gameBoard: GameBoard) {
+    this.gameBoard = gameBoard;
+    this.hitMap = [
+      ['new', 'new', 'new', 'new', 'new'],
+      ['new', 'new', 'new', 'new', 'new'],
+      ['new', 'new', 'new', 'new', 'new'],
+      ['new', 'new', 'new', 'new', 'new'],
+      ['new', 'new', 'new', 'new', 'new'],
+    ];
+    this.attackTimes = 0;
+    this.limitedAttackTimes = 25;
+  }
+
+  playRandom(opponent: Player) {
+    if (this.attackTimes >= this.limitedAttackTimes) return;
+    const ranDomSeed = opponent.gameBoard.height - 1;
+    let xCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
+    let yCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
+    while (this.hitMap[yCor][xCor] !== 'new') {
+      xCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
+      yCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
+    }
+    this.attackTimes++;
+    this.hitMap[yCor][xCor] = 'attacked';
+    opponent.gameBoard.receiveAttack(xCor, yCor);
+  }
+}
 const player = new Player(new GameBoard(5));
-const opponent = new GameBoard(5);
+const opponent = new Computer(new GameBoard(5));
 
 test('playTurn method with an opponent game board(having a ship)', () => {
   //   player.playTurn(opponent, 3, 3);
   player.playTurn(opponent, 4, 4);
-  opponent.placeShip(0, 0, new Ship(2), 'horizontal');
+  opponent.gameBoard.placeShip(0, 0, new Ship(2), 'horizontal');
   player.playTurn(opponent, 0, 0);
   player.playTurn(opponent, 1, 0);
   player.playTurn(opponent, 2, 0);
 
-  expect(opponent.getMissingAttacksCoordinates()).toStrictEqual([
+  expect(opponent.gameBoard.getMissingAttacksCoordinates()).toStrictEqual([
     [2, 0],
     [4, 4],
   ]);
 });
 
-export class Computer {
-  gameBoard: GameBoard;
-  constructor(gameBoard: GameBoard) {
-    this.gameBoard = gameBoard;
-  }
+const computer = new Computer(new GameBoard(5));
+test('computer playRandom method', () => {
+  player.gameBoard.placeShip(0, 0, new Ship(2), 'vertical');
+  computer.playRandom(player);
+  console.log(computer.hitMap);
+  console.log(player.gameBoard.map);
 
-  playRanDom(opponentGameBoard: GameBoard) {
-    // using Math.random to choose a random coordinate,
-    // using if else statement to stop computer from playing at the same spots twice
-    // Extra credit: making the computer 'smarter' after attacking successfully -> because of  the successful attack -> know that next possible spot is horizontal/vertical adjecent
-  }
-}
+  expect(computer.hitMap).toBe(computer.hitMap);
+});
+
+// we are trying to create a random x and y coordinate from the range of 0 -> opponent.height
