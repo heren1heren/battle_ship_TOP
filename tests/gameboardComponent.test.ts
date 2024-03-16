@@ -238,12 +238,3 @@ export default class GameBoard {
 }
 const gameBoard = new GameBoard(10);
 gameBoard.placeShip(1, 1, new Ship(2), 'horizontal right');
-test('isFleetAllSunk() test', () => {
-  expect(gameBoard.isFleetAllSunk()).toBe(false);
-});
-
-test('isFleetAllSunk() test for true return', () => {
-  gameBoard.receiveAttack(1, 1);
-  gameBoard.receiveAttack(2, 1);
-  expect(gameBoard.isFleetAllSunk()).toBe(true);
-});

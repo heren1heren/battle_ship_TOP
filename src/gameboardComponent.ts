@@ -4,16 +4,143 @@ export default class GameBoard {
   width: number;
   size: number;
   map: Array<Ship | 'empty' | 'missingAttack'>[];
-  constructor(height: number = 0) {
+  constructor(height: number = 10) {
     this.height = height; // game board contains height and width to create a grid display.
     this.width = this.height;
     this.size = this.height * this.height;
     this.map = [
-      ['empty', 'empty', 'empty', 'empty', 'empty'],
-      ['empty', 'empty', 'empty', 'empty', 'empty'],
-      ['empty', 'empty', 'empty', 'empty', 'empty'],
-      ['empty', 'empty', 'empty', 'empty', 'empty'],
-      ['empty', 'empty', 'empty', 'empty', 'empty'],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
+      [
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+        'empty',
+      ],
     ];
   }
 
@@ -53,13 +180,8 @@ export default class GameBoard {
   }
   receiveAttack(xCor: number, yCor: number) {
     //[UI] class need to prevent receiveAttach when there was an attack or missing shot  in this coordinate already.
-    /**
-    *  Game boards should have a receiveAttack function
-     that takes a pair of coordinates, determines whether or not 
-     the attack hit a ship and then sends the ‘hit’ function to the correct ship, 
-     or records the coordinates of the missed shot.
-    */
-    // if (xCor > this.height || yCor > this.width) return;
+    //  if (xCor > this.height || yCor > this.width) return;
+
     if (this.map[yCor][xCor] === 'empty') {
       this.map[yCor][xCor] = 'missingAttack';
       // record coordinate of the missed shot
@@ -82,12 +204,11 @@ export default class GameBoard {
   }
   //    Game boards should be able to report whether or not all of their ships have been sunk.
   isFleetAllSunk() {
-    const arr = [];
     for (let i = 0; i < this.height; i++) {
       for (let j = 0; j < this.width; j++) {
         if (this.map[i][j] instanceof Ship) {
           const currentShip = this.map[i][j];
-          console.log(currentShip);
+          //  console.log(currentShip);
           if (currentShip.isSunk() === false) return false;
         }
       }
