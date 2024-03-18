@@ -38,7 +38,6 @@ strong,
 sub,
 sup,
 tt,
-var,
 b,
 u,
 i,
@@ -125,6 +124,92 @@ table {
 	border-spacing: 0;
 }
 
+@mixin flexCenterDir($direction) {
+	display: flex;
+	flex-direction: $direction;
+	justify-content: center;
+	align-items: center;
+}
 body {
-	background-color: black;
+	background-color: gray;
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	#title-section {
+		@include flexCenterDir(row);
+		font-size: 40px;
+		font-weight: bold;
+		flex: 1;
+	}
+	#game-board-section {
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+		flex: 4;
+		#player-section {
+			display: flex;
+			flex-direction: column;
+			font-size: 30px;
+			justify-content: center;
+			align-items: center;
+			gap: 50px;
+			.gameboard {
+				height: 400px;
+				width: 400px;
+				display: grid;
+				border: 4px solid black;
+				gap: 3px;
+				grid-template: repeat(10, 1fr) / repeat(10, 1fr);
+				.gameboard1-cell {
+					background-color: white;
+					&:hover {
+						background-color: black;
+						opacity: 0.3;
+					}
+				}
+				.gameboard1-cell.missing-attack {
+					background-color: gray;
+					opacity: 0.3;
+				}
+				.gameboard1-cell.correct-attack {
+					background-color: red;
+					opacity: 0.5;
+				}
+			}
+		}
+		#enemy-section {
+			display: flex;
+			flex-direction: column;
+			font-size: 30px;
+			justify-content: center;
+			align-items: center;
+			gap: 50px;
+			.gameboard {
+				height: 400px;
+				width: 400px;
+				display: grid;
+				border: 4px solid black;
+				gap: 3px;
+				grid-template: repeat(10, 1fr) / repeat(10, 1fr);
+
+				.gameboard2-cell {
+					background-color: white;
+					border: 1px solid black;
+					&:hover {
+						background-color: black;
+						opacity: 0.3;
+					}
+				}
+				.gameboard2-cell.missing-attack {
+					background-color: gray;
+					opacity: 0.3;
+				}
+				.gameboard2-cell.correct-attack {
+					background-color: red;
+					opacity: 0.5;
+				}
+				// extra detail: .gameboard.ship-is-sunk {}
+			}
+		}
+	}
 }

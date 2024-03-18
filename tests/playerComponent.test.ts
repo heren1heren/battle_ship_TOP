@@ -176,3 +176,6 @@ test('play method', () => {
 
   expect(1).toBe(1);
 });
+
+computer.gameBoard.placeShip(0, 0, new Ship(2), 'horizontal right');
+console.log(computer.gameBoard);

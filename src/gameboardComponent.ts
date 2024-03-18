@@ -178,6 +178,21 @@ export default class GameBoard {
       }
     }
   }
+  randomPlacingShips() {
+    // populating around 40 units -> one of 6 units, two of 5 units , two of 4 units three of 3 units and three of 2 units and one of 1 units
+    // how to do math.random with xCor and yCor?
+    // before placing every ship we need to check two conditions
+    const ranDomSeed = this.height - 1;
+    let xCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
+    let yCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
+    console.log(xCor);
+    console.log(yCor);
+
+    /**
+     *  one: is random xCor and yCor is still on the board
+     * two : is xCors and yCors of each ship collide with the already populated ships.
+     */
+  }
   receiveAttack(xCor: number, yCor: number) {
     //[UI] class need to prevent receiveAttach when there was an attack or missing shot  in this coordinate already.
     //  if (xCor > this.height || yCor > this.width) return;
