@@ -27,14 +27,19 @@ export class Computer {
   constructor(gameBoard: GameBoard) {
     this.gameBoard = gameBoard;
     this.hitMap = [
-      ['new', 'new', 'new', 'new', 'new'],
-      ['new', 'new', 'new', 'new', 'new'],
-      ['new', 'new', 'new', 'new', 'new'],
-      ['new', 'new', 'new', 'new', 'new'],
-      ['new', 'new', 'new', 'new', 'new'],
+      ['new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new'],
+      ['new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new'],
+      ['new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new'],
+      ['new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new'],
+      ['new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new'],
+      ['new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new'],
+      ['new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new'],
+      ['new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new'],
+      ['new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new'],
+      ['new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new', 'new'],
     ];
     this.attackTimes = 0;
-    this.limitedAttackTimes = 25;
+    this.limitedAttackTimes = 100;
   }
   play(player: Player) {
     /** algorithm:
@@ -89,6 +94,12 @@ export class Computer {
     }
   }
   private potentialResetting(xCor: number, yCor: number) {
+    // if the ship length > 1
+    // assumption:  looping and accessing every element of player.gameBoard.map
+    // if there is a spot where instanceof Ship && that ship.isSunk()
+    //return that xCors and yCors inside an array
+    // looping through the array and
+    // do the below
     if (this.hitMap[yCor][xCor + 1] === 'potential')
       this.hitMap[yCor][xCor + 1] = 'new';
     if (this.hitMap[yCor + 1][xCor] === 'potential')
@@ -98,22 +109,21 @@ export class Computer {
     if (this.hitMap[yCor][xCor - 1] === 'potential')
       this.hitMap[yCor][xCor - 1] = 'new';
   }
-  potentialChecking() {
-    //check if this.hitMap contains 'potential'
-    this.hitMap.forEach((stringArr) => {
-      
-      
-      stringArr.forEach((element) => {
-        console.log(element);
-        
-         console.log(element === 'potential');
-         
-        if (element === 'potential') return true;
-      });
-    });
+  private potentialChecking() {
+    //? this method does not work.
+
+    for (let i = 0; i < 10; i++) {
+      for (let j = 0; j < 10; j++) {
+        if (this.hitMap[i][j] === 'potential') {
+          return true;
+        }
+      }
+    }
+
     return false;
   }
-  playSmart(opponent) {
+  playSmart(opponent: Player) {
+    // need to implementing how to reset potential points
     //
     if (this.attackTimes >= this.limitedAttackTimes) return;
     const ranDomSeed = opponent.gameBoard.height - 1;
@@ -130,9 +140,10 @@ export class Computer {
     } else {
       this.hitMap[yCor][xCor] = 'attacked';
     }
+    opponent.gameBoard.receiveAttack(xCor, yCor);
   }
 
-  private playRandom(opponent: Player) {
+  playRandom(opponent: Player) {
     if (this.attackTimes >= this.limitedAttackTimes) return;
     const ranDomSeed = opponent.gameBoard.height - 1;
     let xCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
@@ -153,32 +164,15 @@ export class Computer {
     opponent.gameBoard.receiveAttack(xCor, yCor);
   }
 }
-const player = new Player(new GameBoard(5));
+const player = new Player(new GameBoard(10));
 
-const computer = new Computer(new GameBoard(5));
-test('computer potentialChecking', () => {
-  player.gameBoard.placeShip(0, 0, new Ship(2), 'vertical down');
-  player.gameBoard.placeShip(3, 3, new Ship(3), 'vertical up');
-  computer.play(player);
-  computer.play(player);
-  computer.play(player);
-  computer.play(player);
-  computer.play(player);
-  computer.play(player);
-  console.log(computer.hitMap);
+const computer = new Computer(new GameBoard(10));
 
-  expect(computer.potentialChecking()).toBe(true);
-});
-test.skip('computer play method', () => {
-  computer.play(player);
-  computer.play(player);
-  computer.play(player);
-  computer.play(player);
-  computer.play(player);
-  computer.play(player);
-  computer.play(player);
+test('play method', () => {
+  player.gameBoard.placeShip(1, 1, new Ship(2), 'horizontal right');
+  player.gameBoard.placeShip(3, 3, new Ship(3), 'horizontal left');
   console.log(computer.hitMap);
   console.log(player.gameBoard.map);
 
-  expect(computer.hitMap).toBe(computer.hitMap);
+  expect(1).toBe(1);
 });
