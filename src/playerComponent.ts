@@ -1,6 +1,6 @@
 import GameBoard from '../src/gameboardComponent';
 import Ship from '../src/shipComponent';
-export default class Player {
+export class Player {
   gameBoard: GameBoard;
   constructor(gameBoard: GameBoard) {
     this.gameBoard = gameBoard;
