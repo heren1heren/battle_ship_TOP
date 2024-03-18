@@ -32,9 +32,8 @@ player.gameBoard.randomPlacingShips(new Ship(6));
 enemy.gameBoard.randomPlacingShips(new Ship(6));
 
 // attacking logic from UI
-gameBoard2.addEventListener(
-  'click',
-  (e) => {
+if (!player.gameBoard.isFleetAllSunk() || !enemy.gameBoard.isFleetAllSunk()) {
+  gameBoard2.addEventListener('click', (e) => {
     if (
       e.target instanceof HTMLElement &&
       e.target.dataset.clicked !== 'true' &&
@@ -48,17 +47,49 @@ gameBoard2.addEventListener(
 
       player.playTurn(enemy, xCor, yCor);
 
-      console.log(enemy.gameBoard.map[yCor][xCor]);
+      // console.log(enemy.gameBoard.map[yCor][xCor]);
       enemy.play(player);
       // displayEffect of attacking
       markingAttack(enemy, e.target, xCor, yCor);
       computerMarkingAttack(enemy.hitMap, playerCells);
-      console.log(player.gameBoard.map);
-      console.log(enemy.hitMap);
+      // console.log(player.gameBoard.map);
+      // console.log(enemy.hitMap);
     }
-  }
-  //   { once: true }
-);
+  });
+} else if (player.gameBoard.isFleetAllSunk()) {
+  // create an announcement for computer's win
+  const announcement = document.createElement('div');
+  announcement.classList.add;
+} else {
+  //create an announcement for player's win
+}
+//   gameBoard2.addEventListener(
+//     'click',
+//     (e) => {
+//       if (
+//         e.target instanceof HTMLElement &&
+//         e.target.dataset.clicked !== 'true' &&
+//         e.target.classList.contains('gameboard2-cell')
+//       ) {
+//         e.target.dataset.clicked = 'true';
+
+//         // extracting xCor and yCor
+//         const xCor = +e.target.dataset.cell.split(',')[1];
+//         const yCor = +e.target.dataset.cell.split(',')[0];
+
+//         player.playTurn(enemy, xCor, yCor);
+
+//         console.log(enemy.gameBoard.map[yCor][xCor]);
+//         enemy.play(player);
+//         // displayEffect of attacking
+//         markingAttack(enemy, e.target, xCor, yCor);
+//         computerMarkingAttack(enemy.hitMap, playerCells);
+//         console.log(player.gameBoard.map);
+//         console.log(enemy.hitMap);
+//       }
+//     }
+//     //   { once: true }
+//   );
 
 //* what to do right now:
 /***

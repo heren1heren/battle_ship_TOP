@@ -16,6 +16,7 @@ export function markingAttack(
 }
 
 export function computerMarkingAttack(
+  // renovating it later
   computerMap: Computer['hitMap'],
   playerGameboardCells: NodeList
 ) {
@@ -23,13 +24,12 @@ export function computerMarkingAttack(
   let i = 0;
   playerGameboardCells.forEach((cell, index) => {
     if (index % 10 === 0 && index !== 0) {
-      i++;
+      i++; // it doesn't seem to be a convention way
     }
-    cellArray[i].push(cell);
+    cellArray[i].push(cell); // it doesn't seem to be a convention way
   });
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 10; j++) {
-      // using computer hits map is better
       if (computerMap[i][j] === 'new' || computerMap[i][j] === 'potential')
         continue;
       if (computerMap[i][j] === 'attacked') {

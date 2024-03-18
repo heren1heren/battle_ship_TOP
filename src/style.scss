@@ -131,6 +131,22 @@ table {
 	align-items: center;
 }
 body {
+	#finial-announcement {
+		position: absolute;
+		height: 100vh;
+		width: 100vw;
+		background-color: grey;
+		opacity: 0.8;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 60px;
+		.announcement-wrapper {
+			background-color: black;
+			padding: 40px;
+			color: white;
+		}
+	}
 	background-color: gray;
 	display: flex;
 	flex-direction: column;
