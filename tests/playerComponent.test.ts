@@ -101,7 +101,13 @@ export class Computer {
   potentialChecking() {
     //check if this.hitMap contains 'potential'
     this.hitMap.forEach((stringArr) => {
+      
+      
       stringArr.forEach((element) => {
+        console.log(element);
+        
+         console.log(element === 'potential');
+         
         if (element === 'potential') return true;
       });
     });
@@ -153,6 +159,7 @@ const computer = new Computer(new GameBoard(5));
 test('computer potentialChecking', () => {
   player.gameBoard.placeShip(0, 0, new Ship(2), 'vertical down');
   player.gameBoard.placeShip(3, 3, new Ship(3), 'vertical up');
+  computer.play(player);
   computer.play(player);
   computer.play(player);
   computer.play(player);
