@@ -1,4 +1,4 @@
-import { Computer } from './playerComponent';
+import { Computer, Player } from './playerComponent';
 export function markingAttack(
   target: Computer,
   elementTarget: HTMLElement,
@@ -38,5 +38,20 @@ export function computerMarkingAttack(
         cellArray[i][j].classList.add('correct-attack');
       }
     }
+  }
+}
+export function checkingAndDisplayingAnnouncement(
+  player: Player,
+  enemy: Computer
+) {
+  if (player.gameBoard.isFleetAllSunk()) {
+    const announcementText = document.querySelector('.announcement-wrapper');
+    announcementText.textContent = ' you win yourself.';
+    announcementText.parentElement.setAttribute('id', 'finial-announcement');
+  } else if (enemy.gameBoard.isFleetAllSunk()) {
+    const announcementText = document.querySelector('.announcement-wrapper');
+    announcementText.parentElement.setAttribute('id', 'finial-announcement');
+    announcementText.textContent =
+      ' you lose yourself, hence you win yourself. ';
   }
 }
