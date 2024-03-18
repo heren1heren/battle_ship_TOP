@@ -178,20 +178,71 @@ export default class GameBoard {
       }
     }
   }
-  randomPlacingShips() {
+  randomPlacingShips(ship: Ship) {
     // populating around 40 units -> one of 6 units, two of 5 units , two of 4 units three of 3 units and three of 2 units and one of 1 units
     // how to do math.random with xCor and yCor?
     // before placing every ship we need to check two conditions
     const ranDomSeed = this.height - 1;
     let xCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
     let yCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
-    console.log(xCor);
-    console.log(yCor);
-
+    // random direction too
+    const randomDirection = this.returnRandomDirection();
+    while (
+      !this.checkingCollisionAndOnTheBoard(
+        ship.length,
+        xCor,
+        yCor,
+        randomDirection
+      )
+    ) {
+      xCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
+      yCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
+    }
+    this.placeShip(xCor, yCor, ship, randomDirection);
     /**
      *  one: is random xCor and yCor is still on the board
      * two : is xCors and yCors of each ship collide with the already populated ships.
      */
+  }
+  returnRandomDirection() {
+    const directionSeed = Math.round(Math.random() * 3);
+    switch (directionSeed) {
+      case 0:
+        return 'horizontal right';
+
+      case 1:
+        return 'horizontal left';
+
+      case 2:
+        return 'vertical down';
+
+      case 3:
+        return 'vertical up';
+      default:
+        return 'vertical down';
+    }
+  }
+  checkingCollisionAndOnTheBoard(
+    shipLength: Ship['length'],
+    xCor: number,
+    yCor: number,
+    direction: string
+  ) {
+    for (let i = 0; i < shipLength; i++) {
+      if (yCor > 9 || yCor < 0 || xCor > 9 || xCor < 0) return false;
+
+      if (this.map[yCor][xCor] !== 'empty') return false;
+      if (direction === 'horizontal right') {
+        xCor++;
+      } else if (direction === 'horizontal left') {
+        xCor--;
+      } else if (direction === 'vertical down') {
+        yCor++;
+      } else if (direction === 'vertical up') {
+        yCor--;
+      }
+    }
+    return true;
   }
   receiveAttack(xCor: number, yCor: number) {
     //[UI] class need to prevent receiveAttach when there was an attack or missing shot  in this coordinate already.

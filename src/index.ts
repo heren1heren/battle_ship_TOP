@@ -3,8 +3,10 @@ import './style.scss';
 import Ship from './shipComponent';
 import { Player, Computer } from './playerComponent';
 import GameBoard from './gameboardComponent';
+import { markingAttack, computerMarkingAttack } from './DOMAndUI';
 const gameBoard1 = document.querySelector('#gameboard1');
 const gameBoard2 = document.querySelector('#gameboard2');
+
 for (let i = 0; i <= 9; i++) {
   for (let j = 0; j <= 9; j++) {
     const cell1 = document.createElement('div');
@@ -22,49 +24,54 @@ for (let i = 0; i <= 9; i++) {
     gameBoard2.append(cell2);
   }
 }
-
+const playerCells = document.querySelectorAll('.gameboard1-cell');
 const player = new Player(new GameBoard(10));
 const enemy = new Computer(new GameBoard(10));
-enemy.gameBoard.placeShip(0, 0, new Ship(2), 'horizontal right');
+player.gameBoard.randomPlacingShips(new Ship(6));
+
+enemy.gameBoard.randomPlacingShips(new Ship(6));
+
 // attacking logic from UI
-gameBoard2.addEventListener('click', (e) => {
-  if (
-    e.target instanceof HTMLElement &&
-    e.target.dataset.clicked !== 'true' && // why doesn't it stop in here
-    e.target.classList.contains('gameboard2-cell')
-  ) {
-    e.target.dataset.clicked = 'true';
+gameBoard2.addEventListener(
+  'click',
+  (e) => {
+    if (
+      e.target instanceof HTMLElement &&
+      e.target.dataset.clicked !== 'true' &&
+      e.target.classList.contains('gameboard2-cell')
+    ) {
+      e.target.dataset.clicked = 'true';
 
-    // extracting xCor and yCor
-    const xCor = +e.target.dataset.cell.split(',')[1];
-    const yCor = +e.target.dataset.cell.split(',')[0];
+      // extracting xCor and yCor
+      const xCor = +e.target.dataset.cell.split(',')[1];
+      const yCor = +e.target.dataset.cell.split(',')[0];
 
-    player.playTurn(enemy, xCor, yCor);
+      player.playTurn(enemy, xCor, yCor);
 
-    console.log(enemy.gameBoard.map);
-
-    console.log(enemy.gameBoard.map[yCor][xCor]);
-    // displayEffect of attacking
-    markingAttack(e.target, xCor, yCor);
+      console.log(enemy.gameBoard.map[yCor][xCor]);
+      enemy.play(player);
+      // displayEffect of attacking
+      markingAttack(enemy, e.target, xCor, yCor);
+      computerMarkingAttack(enemy.hitMap, playerCells);
+      console.log(player.gameBoard.map);
+      console.log(enemy.hitMap);
+    }
   }
-});
-function markingAttack(elementTarget: HTMLElement, xCor: number, yCor: number) {
-  // Extra-detail :checking if the corrsponding attack is the last attack that making the ship.isSunk() return true
-  // -> toggle all cells' opacity = 0.2 that contain that ship
-  // -> classList toggle e.target.classList.add('missing attack | correct attack')
-  if (enemy.gameBoard.map[yCor][xCor] === 'missingAttack') {
-    elementTarget.classList.add('missing-attack');
-  } else {
-    elementTarget.classList.add('correct-attack');
-  }
-}
-// gameBoard2.addEventListener('click', (e) => {
-//   console.log(e.target);
-// });
+  //   { once: true }
+);
+
+//* what to do right now:
+/***
+ * *create a div that display whose turn.
+ * *create main loop when the player will play first
+ */
 
 // main loop
-// while(!player.gameBoard.isFleetAllSunk() && !enemy.gameBoard.isFleetAllSunk()) {
-//     // waiting for user click once
-//     // -> let computer play once
-
+// while ( // it breaks
+//   !player.gameBoard.isFleetAllSunk() &&
+//   !enemy.gameBoard.isFleetAllSunk()
+// ) {
+//   // waiting for user click once
+//   // timeout 0.5second
+//   // -> let computer play once
 // }
