@@ -3,8 +3,14 @@ import './style.scss';
 import Ship from './shipComponent';
 import { Player, Computer } from './playerComponent';
 import GameBoard from './gameboardComponent';
+import {
+  markingAttack,
+  computerMarkingAttack,
+  checkingAndDisplayingAnnouncement,
+} from './DOMAndUI';
 const gameBoard1 = document.querySelector('#gameboard1');
 const gameBoard2 = document.querySelector('#gameboard2');
+
 for (let i = 0; i <= 9; i++) {
   for (let j = 0; j <= 9; j++) {
     const cell1 = document.createElement('div');
@@ -22,49 +28,59 @@ for (let i = 0; i <= 9; i++) {
     gameBoard2.append(cell2);
   }
 }
-
+const playerCells = document.querySelectorAll('.gameboard1-cell');
+const turnAnnouncement = document.querySelector('.turn-announcement');
 const player = new Player(new GameBoard(10));
+
 const enemy = new Computer(new GameBoard(10));
-enemy.gameBoard.placeShip(0, 0, new Ship(2), 'horizontal right');
+player.gameBoard.randomPlacingShips(new Ship(4));
+player.gameBoard.randomPlacingShips(new Ship(3));
+player.gameBoard.randomPlacingShips(new Ship(2));
+
+enemy.gameBoard.randomPlacingShips(new Ship(4));
+enemy.gameBoard.randomPlacingShips(new Ship(3));
+enemy.gameBoard.randomPlacingShips(new Ship(2));
+
 // attacking logic from UI
+// let playerTurn = true;
 gameBoard2.addEventListener('click', (e) => {
-  if (
-    e.target instanceof HTMLElement &&
-    e.target.dataset.clicked !== 'true' && // why doesn't it stop in here
-    e.target.classList.contains('gameboard2-cell')
-  ) {
-    e.target.dataset.clicked = 'true';
+  //   if (!playerTurn) return;
+  if (!player.gameBoard.isFleetAllSunk() && !enemy.gameBoard.isFleetAllSunk()) {
+    if (
+      e.target instanceof HTMLElement &&
+      e.target.dataset.clicked !== 'true' &&
+      e.target.classList.contains('gameboard2-cell')
+    ) {
+      e.target.dataset.clicked = 'true';
 
-    // extracting xCor and yCor
-    const xCor = +e.target.dataset.cell.split(',')[1];
-    const yCor = +e.target.dataset.cell.split(',')[0];
+      // extracting xCor and yCor from document
+      const xCor = +e.target.dataset.cell.split(',')[1];
+      const yCor = +e.target.dataset.cell.split(',')[0];
 
-    player.playTurn(enemy, xCor, yCor);
-
-    console.log(enemy.gameBoard.map);
-
-    console.log(enemy.gameBoard.map[yCor][xCor]);
-    // displayEffect of attacking 
-    markingAttack(e.target, xCor, yCor);
+      player.playTurn(enemy, xCor, yCor);
+      // autoplay from computer
+      //   turnAnnouncement.textContent = 'Computer Turn:';
+      // change turn-announcement here:
+      // ?  setTimeout(() => { // setTimeout does not work here
+      //     // consider another way to do so
+      //     turnAnnouncement.textContent = 'Player Turn:';
+      //     enemy.play(player); // doesn't execute the first time and from the second time
+      //     // the pausing time does not matter, enemy.play(player) always executes instantly
+      //     playerTurn = true;
+      //   }, Math.random() * 5000);
+      enemy.play(player);
+      // displayEffect of attacking
+      markingAttack(enemy, e.target, xCor, yCor);
+      computerMarkingAttack(enemy.hitMap, playerCells);
+      // display announcement if there is a winner
+      checkingAndDisplayingAnnouncement(player, enemy);
+      //   playerTurn = false;
+    }
   }
 });
-function markingAttack(elementTarget: HTMLElement, xCor: number, yCor: number) {
-  // Extra-detail :checking if the corrsponding attack is the last attack that making the ship.isSunk() return true
-  // -> toggle all cells' opacity = 0.2 that contain that ship
-  // -> classList toggle e.target.classList.add('missing attack | correct attack')
-  if (enemy.gameBoard.map[yCor][xCor] === 'missingAttack') {
-    elementTarget.classList.add('missing-attack');
-  } else {
-    elementTarget.classList.add('correct-attack');
-  }
-}
-// gameBoard2.addEventListener('click', (e) => {
-//   console.log(e.target);
-// });
 
-// main loop
-// while(!player.gameBoard.isFleetAllSunk() && !enemy.gameBoard.isFleetAllSunk()) {
-//     // waiting for user click once
-//     // -> let computer play once
-
-// }
+//* what to do right now:
+/***
+ *  let user choose coordinate by type in or dragging
+ *  reviewing old code -> making it a better version by refactoring , decoupling.
+ */

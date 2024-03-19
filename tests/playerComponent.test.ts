@@ -124,9 +124,10 @@ export class Computer {
   }
   playSmart(opponent: Player) {
     // need to implementing how to reset potential points
-    //
     if (this.attackTimes >= this.limitedAttackTimes) return;
     const ranDomSeed = opponent.gameBoard.height - 1;
+    // should refactor to return random coordinate()
+
     let xCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
     let yCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
     while (this.hitMap[yCor][xCor] !== 'potential') {
@@ -146,21 +147,26 @@ export class Computer {
   playRandom(opponent: Player) {
     if (this.attackTimes >= this.limitedAttackTimes) return;
     const ranDomSeed = opponent.gameBoard.height - 1;
+    // should refactor to return random coordinate()
     let xCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
     let yCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
     while (this.hitMap[yCor][xCor] !== 'new') {
-      // replace typeOfAttack here
       xCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
       yCor = Math.round(Math.random() * ranDomSeed - 1) + 1;
     }
     this.attackTimes++;
-    // marking logic
+    //marking logic
     if (opponent.gameBoard.map[yCor][xCor] instanceof Ship) {
       this.hitMap[yCor][xCor] = 'attackedShip';
       this.potentialMarking(xCor, yCor);
     } else {
       this.hitMap[yCor][xCor] = 'attacked';
     }
+    console.log(xCor);
+    console.log(yCor);
+    return [xCor, yCor]; // doesn't suit with the function itself.
+
+    //////
     opponent.gameBoard.receiveAttack(xCor, yCor);
   }
 }
@@ -168,14 +174,13 @@ const player = new Player(new GameBoard(10));
 
 const computer = new Computer(new GameBoard(10));
 
-test('play method', () => {
-  player.gameBoard.placeShip(1, 1, new Ship(2), 'horizontal right');
-  player.gameBoard.placeShip(3, 3, new Ship(3), 'horizontal left');
-  console.log(computer.hitMap);
-  console.log(player.gameBoard.map);
+// test('play method', () => {
+//   player.gameBoard.placeShip(1, 1, new Ship(2), 'horizontal right');
+//   player.gameBoard.placeShip(3, 3, new Ship(3), 'horizontal left');
+//   console.log(computer.hitMap);
+//   console.log(player.gameBoard.map);
 
-  expect(1).toBe(1);
-});
+//   expect(1).toBe(1);
+// });
 
-computer.gameBoard.placeShip(0, 0, new Ship(2), 'horizontal right');
-console.log(computer.gameBoard);
+computer.play(player);
