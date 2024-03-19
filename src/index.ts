@@ -84,33 +84,62 @@ gameBoard2.addEventListener('click', (e) => {
 //* what to do right now:
 
 const draggables = document.querySelectorAll('.draggable');
-
+let currentDraggedObject;
 draggables.forEach((draggable) => {
   draggable.addEventListener('dragstart', () => {
-    console.log(draggable);
     draggable.classList.add('dragging');
+    console.log(draggable);
+    currentDraggedObject = draggable;
   });
   draggable.addEventListener('dragend', () =>
     draggable.classList.remove('dragging')
   );
 });
 gameBoard1.addEventListener('dragover', (e) => {
-  // now display corresponding coordinate while dragging
   const HTMLElement = e.target;
+  let direction;
+  const shipLength = currentDraggedObject.dataset.length;
+  console.log(shipLength);
 
+  if (
+    currentDraggedObject.parentElement.classList.contains(
+      'ships-placement-vertical'
+    )
+  ) {
+    direction = 'vertical';
+    console.log(direction);
+  } else {
+    direction = 'horizontal';
+    console.log(direction);
+  }
   if (HTMLElement.classList.contains('gameboard1-cell')) {
     const xCor = +e.target.dataset.cell.split(',')[0];
     const yCor = +e.target.dataset.cell.split(',')[1];
     console.log(xCor);
     console.log(yCor);
+    // now we need to extract 'direction from li.classlist if..else statement
+    // how to access current draggable here ?
+    // displayShipWhileDragging(xCor, yCor, length, direction);
   }
 });
+
+function displayShipWhileDragging(
+  xCor: number,
+  yCor: number,
+  length: number,
+  direction: 'horizontal' | 'vertical'
+) {
+  //
+}
 // how can we prevent the player from dropping the ships outside gameboard container?
 //
 // we need to always update ships image inside player gameboard while the player drag or after dropping
 /***
  *
  * *
- *  let user choose coordinate by  dragging by using 'dragStart' and 'dragover'
+ *  let user choose coordinate by  dragging by using 'dragStart' and 'dragover' (almost solved)
+ * *how can we create each ship with each li element when we drag li element over gameboard 1
+ * we don't need to use place ship when dragging over but just only display the placement
+ * -> create a new function displayShipWhile dragging
  *  reviewing old code -> making it a better version by refactoring , decoupling.
  */
