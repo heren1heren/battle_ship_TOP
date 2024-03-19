@@ -78,9 +78,10 @@ gameBoard2.addEventListener('click', (e) => {
     }
   }
 });
-
+function mainLoop() {
+    
+}
 //* what to do right now:
 /***
- * *create a div that display whose turn.
  * *create main loop when the player will play first.
  */
