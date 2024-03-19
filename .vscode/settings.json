@@ -3,5 +3,6 @@
     "source.fixAll.eslint": "prettier"
   },
   "eslint.validate": ["javascript", "typescript"],
-  "liveServer.settings.port": 5502
+  "liveServer.settings.port": 5502,
+  "cSpell.words": ["draggables"]
 }

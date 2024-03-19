@@ -19,7 +19,24 @@
             <div class="gameboard" id="gameboard1">
             </div>
         </div>
-        <div class="turn-announcement"> Player turn:</div>
+        <div id="ships-placement" class="ships-placement-horizontal ">
+            <button class="direction-button"> Change Direction</button>
+            <li class="draggable" draggable="true" data-length="4">
+                <div class="ship-cell"></div>
+                <div class="ship-cell"></div>
+                <div class="ship-cell"></div>
+                <div class="ship-cell"></div>
+            </li>
+            <li class="draggable" draggable="true" data-length="3">
+                <div class="ship-cell"></div>
+                <div class="ship-cell"></div>
+                <div class="ship-cell"></div>
+            </li>
+            <li class="draggable" draggable="true" data-length="2">
+                <div class="ship-cell"></div>
+                <div class="ship-cell"></div>
+            </li>
+        </div>
         <div id="enemy-section">
             <div id="board-title"> enemy fleet</div>
             <div class="gameboard" id="gameboard2">
