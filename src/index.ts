@@ -44,7 +44,7 @@ gameBoard2.addEventListener('click', (e) => {
     console.log(enemy.gameBoard.map);
 
     console.log(enemy.gameBoard.map[yCor][xCor]);
-    // displayEffect of attacking
+    // displayEffect of attacking 
     markingAttack(e.target, xCor, yCor);
   }
 });
