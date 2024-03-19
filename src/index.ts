@@ -9,29 +9,27 @@ import {
   checkingAndDisplayingAnnouncement,
   displayOurShips,
   changeDirection,
+  displayShipWhileDragging,
+  returnDynamicDirection,
 } from './DOMAndUI';
 const gameBoard1 = document.querySelector('#gameboard1');
 const gameBoard2 = document.querySelector('#gameboard2');
 const shipsPlacement = document.querySelector('#ships-placement');
-
 const directionButton = document.querySelector('.direction-button');
-for (let i = 0; i <= 9; i++) {
-  for (let j = 0; j <= 9; j++) {
-    const cell1 = document.createElement('div');
-    cell1.classList.add('gameboard1-cell');
-    cell1.dataset.cell = `${i},${j}`;
-    gameBoard1.append(cell1);
+populatingInsideGameBoard(gameBoard1, 'gameboard1-cell');
+populatingInsideGameBoard(gameBoard2, 'gameboard2-cell');
+// make a function call append gameboard
+function populatingInsideGameBoard(gameBoard: Element, cellClass: string) {
+  for (let i = 0; i <= 9; i++) {
+    for (let j = 0; j <= 9; j++) {
+      const cell = document.createElement('div');
+      cell.classList.add(cellClass);
+      cell.dataset.cell = `${i},${j}`;
+      gameBoard.append(cell);
+    }
   }
 }
 
-for (let i = 0; i <= 9; i++) {
-  for (let j = 0; j <= 9; j++) {
-    const cell2 = document.createElement('div');
-    cell2.classList.add('gameboard2-cell');
-    cell2.dataset.cell = `${i},${j}`;
-    gameBoard2.append(cell2);
-  }
-}
 // should create a function to convert these below
 const playerCells = [...document.querySelectorAll('.gameboard1-cell')];
 const playerCellsArr: HTMLElement[][] = [
@@ -59,8 +57,6 @@ playerCells.forEach((cell, index) => {
 const player = new Player(new GameBoard(10));
 
 const enemy = new Computer(new GameBoard(10));
-player.gameBoard.randomPlacingShips(new Ship(4));
-player.gameBoard.randomPlacingShips(new Ship(3));
 player.gameBoard.randomPlacingShips(new Ship(2));
 
 enemy.gameBoard.randomPlacingShips(new Ship(4));
@@ -107,24 +103,62 @@ gameBoard2.addEventListener('click', (e) => {
 
 const draggables = document.querySelectorAll('.draggable');
 let currentDraggedObject: Element;
+let destination: EventTarget;
+// document.body.addEventListener('dragend', (e) => {
+//   console.log(e.target);
+// });
 draggables.forEach((draggable) => {
+  //event
   draggable.addEventListener('dragstart', () => {
     draggable.classList.add('dragging');
 
     currentDraggedObject = draggable;
   });
-  draggable.addEventListener(
-    'dragend',
-    () => draggable.classList.remove('dragging')
-    // call placing ship function in here. for player
-    // if destination is not ship-cell return
+  // event
+  draggable.addEventListener('dragend', () => {
+    const shipLength = +currentDraggedObject.dataset.length;
+    let direction: string;
+    console.log(destination);
+
+    if (destination) {
+      const xCor = +destination.dataset.cell.split(',')[1];
+      const yCor = +destination.dataset.cell.split(',')[0];
+      if (
+        currentDraggedObject.parentElement.classList.contains(
+          'ships-placement-vertical'
+        )
+      ) {
+        direction = 'vertical';
+      } else {
+        direction = 'horizontal';
+      }
+      const dynamicDirection = returnDynamicDirection(
+        direction,
+        xCor,
+        yCor,
+        shipLength
+      );
+      console.log([yCor, xCor]);
+      player.gameBoard.placeShip(
+        xCor,
+        yCor,
+        new Ship(shipLength),
+        dynamicDirection
+      );
+      displayOurShips(playerCells, player.gameBoard.map);
+    } else {
+      draggable.classList.remove('dragging');
+    }
+    // if destination when the mouse up  is not ship-cell return
     // player.gameBoard.placeShip(xCor,yCor,new Ship(),direction)
-    //
-  );
+    // else {  draggable.classList.remove('dragging'); }
+  });
 });
 gameBoard1.addEventListener('dragover', (e) => {
-  const HTMLElement = e.target;
-  const shipLength = +currentDraggedObject.dataset.length;
+  displayOurShips(playerCells, player.gameBoard.map);
+  const HTMLElement = e.target; // review code latter
+  const shipLength = +currentDraggedObject.dataset.length; // review code latter
+  destination = e.target;
   let direction: 'vertical' | 'horizontal';
   if (
     currentDraggedObject.parentElement.classList.contains(
@@ -138,85 +172,25 @@ gameBoard1.addEventListener('dragover', (e) => {
   if (HTMLElement.classList.contains('gameboard1-cell')) {
     let xCor = +e.target.dataset.cell.split(',')[1];
     let yCor = +e.target.dataset.cell.split(',')[0];
+    displayShipWhileDragging(xCor, yCor, shipLength, direction, playerCellsArr);
     // using condition statement to only toggle off empty cell
     // by reseting all the cell before apply color ->you toggle off.
-    playerCells.forEach((cell) => {
-      cell.classList.remove('dragging-ship-color');
-    });
-    playerCellsArr[yCor][xCor].classList.add('dragging-ship-color');
-    // create a function to return correct direction based on xCor,yCor, and input direction
-    const dynamicDirection = returnDynamicDirection(
-      direction,
-      xCor,
-      yCor,
-      shipLength
-    );
-
-    for (let i = 0; i < shipLength; i++) {
-      if (dynamicDirection === 'horizontal right') {
-        playerCellsArr[yCor][xCor].classList.add('dragging-ship-color');
-        xCor++;
-      } else if (dynamicDirection === 'horizontal left') {
-        playerCellsArr[yCor][xCor].classList.add('dragging-ship-color');
-        xCor--;
-        //
-      } else if (dynamicDirection === 'vertical down') {
-        playerCellsArr[yCor][xCor].classList.add('dragging-ship-color');
-        yCor++;
-        //
-      } else if (dynamicDirection === 'vertical up') {
-        playerCellsArr[yCor][xCor].classList.add('dragging-ship-color');
-        yCor--;
-        //
-      }
-    }
-    // displayShipWhileDragging(xCor, yCor, length, direction);
-    //toggle color for current cell
   }
 });
-function returnDynamicDirection(
-  direction: 'horizontal' | 'vertical',
-  xCor: number,
-  yCor: number,
-  shipLength: number
-) {
-  //
-  if (direction === 'horizontal' && xCor - 1 + shipLength > 9) {
-    return 'horizontal left';
-  } else if (direction === 'horizontal') {
-    return 'horizontal right';
-  }
-  if (direction === 'vertical' && yCor - 1 + shipLength > 9) {
-    console.log(yCor + shipLength);
 
-    return 'vertical up';
-  } else {
-    console.log(yCor + shipLength);
-
-    return 'vertical down';
-  }
-}
-function displayShipWhileDragging(
-  xCor: number,
-  yCor: number,
-  length: number,
-  direction: 'horizontal' | 'vertical'
-) {
-  // displayWhileDRagging will add class 'dragging-ship-color' for
-  // corresponding ship-cells
-  //accessing ship-cells by 4 agurments above.
-}
 // how can we prevent the player from dropping the ships outside gameboard container?
 //
 // we need to always update ships image inside player gameboard while the player drag or after dropping
 /***
  *
- * *
- *  let user choose coordinate by  dragging by using 'dragStart' and 'dragover' (almost solved)
- * how can we create each ship with each li element when we drag li element over gameboard 1
+ * * currently reorganizing the code
  *
  ** don't  use place ship when dragging over but just only display the placement
- * *-> create a new function displayShipWhile dragging.
+ * *-> create a new function displayShipWhile dragging. (solved)
+ * * create a ship instance after player mouse up
+ * * start to let player play the game after player click the button play.
+ * *-> delete ship-placement, delete the start button
+ * * -> determine how many ships player have placed -> random the same ships for computer.
  *
  * * AI smart move doesn't work -> check it out again.
  *  *reviewing old code -> making it a better version by refactoring , decoupling.

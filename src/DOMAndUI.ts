@@ -93,3 +93,66 @@ export function changeDirection(shipsPlacement: Element) {
     shipsPlacement.classList.add('ships-placement-horizontal');
   }
 }
+
+// displaying while dragging functions
+export function returnDynamicDirection(
+  direction: 'horizontal' | 'vertical',
+  xCor: number,
+  yCor: number,
+  shipLength: number
+) {
+  //
+  if (direction === 'horizontal' && xCor - 1 + shipLength > 9) {
+    return 'horizontal left';
+  } else if (direction === 'horizontal') {
+    return 'horizontal right';
+  }
+  if (direction === 'vertical' && yCor - 1 + shipLength > 9) {
+    console.log(yCor + shipLength);
+
+    return 'vertical up';
+  } else {
+    console.log(yCor + shipLength);
+
+    return 'vertical down';
+  }
+}
+export function displayShipWhileDragging(
+  xCor: number,
+  yCor: number,
+  length: number,
+  direction: 'horizontal' | 'vertical',
+  gameBoardCell: HTMLElement[][]
+) {
+  gameBoardCell.forEach((cellArray) => {
+    cellArray.forEach((cell) => {
+      cell.classList.remove('dragging-ship-color');
+    });
+  });
+  gameBoardCell[yCor][xCor].classList.add('dragging-ship-color');
+  // create a function to return correct direction based on xCor,yCor, and input direction
+  const dynamicDirection = returnDynamicDirection(
+    direction,
+    xCor,
+    yCor,
+    length
+  );
+  for (let i = 0; i < length; i++) {
+    if (dynamicDirection === 'horizontal right') {
+      gameBoardCell[yCor][xCor].classList.add('dragging-ship-color');
+      xCor++;
+    } else if (dynamicDirection === 'horizontal left') {
+      gameBoardCell[yCor][xCor].classList.add('dragging-ship-color');
+      xCor--;
+      //
+    } else if (dynamicDirection === 'vertical down') {
+      gameBoardCell[yCor][xCor].classList.add('dragging-ship-color');
+      yCor++;
+      //
+    } else if (dynamicDirection === 'vertical up') {
+      gameBoardCell[yCor][xCor].classList.add('dragging-ship-color');
+      yCor--;
+      //
+    }
+  }
+}
