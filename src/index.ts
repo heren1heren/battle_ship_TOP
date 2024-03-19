@@ -11,62 +11,26 @@ import {
   changeDirection,
   displayShipWhileDragging,
   returnDynamicDirection,
+  populatingInsideGameBoard,
+  returnCellArrayFromAnArray,
 } from './DOMAndUI';
+type basicDirection = 'vertical' | 'horizontal';
 const gameBoard1 = document.querySelector('#gameboard1');
 const gameBoard2 = document.querySelector('#gameboard2');
 const shipsPlacement = document.querySelector('#ships-placement');
 const directionButton = document.querySelector('.direction-button');
 populatingInsideGameBoard(gameBoard1, 'gameboard1-cell');
 populatingInsideGameBoard(gameBoard2, 'gameboard2-cell');
-// make a function call append gameboard
-function populatingInsideGameBoard(gameBoard: Element, cellClass: string) {
-  for (let i = 0; i <= 9; i++) {
-    for (let j = 0; j <= 9; j++) {
-      const cell = document.createElement('div');
-      cell.classList.add(cellClass);
-      cell.dataset.cell = `${i},${j}`;
-      gameBoard.append(cell);
-    }
-  }
-}
 
-// should create a function to convert these below
 const playerCells = [...document.querySelectorAll('.gameboard1-cell')];
-const playerCellsArr: HTMLElement[][] = [
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-  [],
-];
-// const  turnAnnouncement = document.querySelector('.turn-announcement');
-let count = 0;
-playerCells.forEach((cell, index) => {
-  if (index % 10 === 0 && index !== 0) {
-    count++;
-  }
-  playerCellsArr[count].push(cell);
-});
-// console.log(playerCellsArr);
-
+const playerCellsArr = returnCellArrayFromAnArray(playerCells);
 const player = new Player(new GameBoard(10));
-
 const enemy = new Computer(new GameBoard(10));
-player.gameBoard.randomPlacingShips(new Ship(2));
 
-enemy.gameBoard.randomPlacingShips(new Ship(4));
-enemy.gameBoard.randomPlacingShips(new Ship(3));
-enemy.gameBoard.randomPlacingShips(new Ship(2));
 // let playerTurn = true;
 
 //only let user play the game after placing all their ships.
 // attacking logic from UI
-displayOurShips(playerCells, player.gameBoard.map);
 //button to change direction.
 directionButton.addEventListener('click', () =>
   changeDirection(shipsPlacement)
@@ -104,9 +68,6 @@ gameBoard2.addEventListener('click', (e) => {
 const draggables = document.querySelectorAll('.draggable');
 let currentDraggedObject: Element;
 let destination: EventTarget;
-// document.body.addEventListener('dragend', (e) => {
-//   console.log(e.target);
-// });
 draggables.forEach((draggable) => {
   //event
   draggable.addEventListener('dragstart', () => {
@@ -115,12 +76,13 @@ draggables.forEach((draggable) => {
     currentDraggedObject = draggable;
   });
   // event
-  draggable.addEventListener('dragend', () => {
+  draggable.addEventListener('dragend', (e) => {
     const shipLength = +currentDraggedObject.dataset.length;
-    let direction: string;
-    console.log(destination);
+    let direction: basicDirection;
 
-    if (destination) {
+    // need to stop user from dragging the draggable object twice.
+    if (destination.classList.contains('gameboard1-cell')) {
+      // how to delete destination varible here or reset it here?
       const xCor = +destination.dataset.cell.split(',')[1];
       const yCor = +destination.dataset.cell.split(',')[0];
       if (
@@ -138,16 +100,21 @@ draggables.forEach((draggable) => {
         yCor,
         shipLength
       );
-      console.log([yCor, xCor]);
+
       player.gameBoard.placeShip(
         xCor,
         yCor,
         new Ship(shipLength),
         dynamicDirection
       );
+      enemy.gameBoard.randomPlacingShips(new Ship(shipLength));
       displayOurShips(playerCells, player.gameBoard.map);
+      // create a resetStatesAfterDrop function
+
+      resetAfterDrop(e.target);
     } else {
       draggable.classList.remove('dragging');
+      resetAfterDropWithNoInput();
     }
     // if destination when the mouse up  is not ship-cell return
     // player.gameBoard.placeShip(xCor,yCor,new Ship(),direction)
@@ -173,21 +140,27 @@ gameBoard1.addEventListener('dragover', (e) => {
     let xCor = +e.target.dataset.cell.split(',')[1];
     let yCor = +e.target.dataset.cell.split(',')[0];
     displayShipWhileDragging(xCor, yCor, shipLength, direction, playerCellsArr);
+
     // using condition statement to only toggle off empty cell
     // by reseting all the cell before apply color ->you toggle off.
   }
 });
-
+function resetAfterDrop(deletingElement: HTMLElement) {
+  destination = undefined;
+  deletingElement.style.cssText = 'display:none;';
+}
+function resetAfterDropWithNoInput() {
+  destination = undefined;
+}
 // how can we prevent the player from dropping the ships outside gameboard container?
 //
 // we need to always update ships image inside player gameboard while the player drag or after dropping
 /***
  *
- * * currently reorganizing the code
  *
- ** don't  use place ship when dragging over but just only display the placement
- * *-> create a new function displayShipWhile dragging. (solved)
- * * create a ship instance after player mouse up
+ ** implementing the condition when player can start to play the game
+ ** create a start button that will let the user start the game.
+ * * currently reorganizing the code (postponed)
  * * start to let player play the game after player click the button play.
  * *-> delete ship-placement, delete the start button
  * * -> determine how many ships player have placed -> random the same ships for computer.

@@ -1,5 +1,45 @@
 import { Computer, Player } from './playerComponent';
 import Ship from './shipComponent';
+//* extracting logic functions to extract from Document web page
+export function returnCellArrayFromAnArray(array: HTMLElement[]) {
+  //
+  const playerCellsArr: HTMLElement[][] = [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+  ];
+  let count = 0;
+  array.forEach((cell, index) => {
+    if (index % 10 === 0 && index !== 0) {
+      count++;
+    }
+    playerCellsArr[count].push(cell);
+  });
+  return playerCellsArr;
+}
+
+export function populatingInsideGameBoard(
+  gameBoard: Element,
+  cellClass: string
+) {
+  for (let i = 0; i <= 9; i++) {
+    for (let j = 0; j <= 9; j++) {
+      const cell = document.createElement('div');
+      cell.classList.add(cellClass);
+      cell.dataset.cell = `${i},${j}`;
+      gameBoard.append(cell);
+    }
+  }
+}
+
+//* function for marking logic
 export function markingAttack(
   target: Computer,
   elementTarget: HTMLElement,
@@ -15,7 +55,6 @@ export function markingAttack(
     elementTarget.classList.add('correct-attack');
   }
 }
-
 export function computerMarkingAttack(
   // renovating it later
   computerMap: Computer['hitMap'],
@@ -41,6 +80,7 @@ export function computerMarkingAttack(
     }
   }
 }
+//* function for announcement
 export function checkingAndDisplayingAnnouncement(
   player: Player,
   enemy: Computer
@@ -57,7 +97,7 @@ export function checkingAndDisplayingAnnouncement(
   }
 }
 
-// create a function to display color blue for our ship
+//* create a function to display color blue for our ship
 export function displayOurShips(
   playerGameboardCells: NodeList,
   ourMap: Array<Ship | 'empty' | 'missingAttack'>[]
