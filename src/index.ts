@@ -84,15 +84,17 @@ gameBoard2.addEventListener('click', (e) => {
 //* what to do right now:
 
 const draggables = document.querySelectorAll('.draggable');
-let currentDraggedObject;
+let currentDraggedObject: Element;
 draggables.forEach((draggable) => {
   draggable.addEventListener('dragstart', () => {
     draggable.classList.add('dragging');
-    console.log(draggable);
+
     currentDraggedObject = draggable;
   });
   draggable.addEventListener('dragend', () =>
     draggable.classList.remove('dragging')
+    // call placing ship function in here. for player
+    player.gameBoard.placeShip(xCor,yCor,new Ship(),direction)
   );
 });
 gameBoard1.addEventListener('dragover', (e) => {
