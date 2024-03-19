@@ -207,8 +207,6 @@ body {
 		}
 
 		.ships-placement-horizontal {
-			height: 200px;
-			width: 200px;
 			display: flex;
 			flex-direction: column;
 			align-items: flex-start;
@@ -242,8 +240,6 @@ body {
 			opacity: 0.5;
 		}
 		.ships-placement-vertical {
-			height: 200px;
-			width: 200px;
 			display: flex;
 			flex-direction: row;
 			align-items: flex-start;
@@ -313,4 +309,10 @@ body {
 			}
 		}
 	}
+}
+
+.buttons-wrapper {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
 }

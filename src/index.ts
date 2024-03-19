@@ -19,6 +19,13 @@ const gameBoard1 = document.querySelector('#gameboard1');
 const gameBoard2 = document.querySelector('#gameboard2');
 const shipsPlacement = document.querySelector('#ships-placement');
 const directionButton = document.querySelector('.direction-button');
+const startButton = document.querySelector('.start-button');
+let playerStart = false;
+startButton.addEventListener('click', (e) => {
+  e.preventDefault();
+  playerStart = true;
+  shipsPlacement.style.cssText = 'display:none';
+});
 populatingInsideGameBoard(gameBoard1, 'gameboard1-cell');
 populatingInsideGameBoard(gameBoard2, 'gameboard2-cell');
 
@@ -26,8 +33,6 @@ const playerCells = [...document.querySelectorAll('.gameboard1-cell')];
 const playerCellsArr = returnCellArrayFromAnArray(playerCells);
 const player = new Player(new GameBoard(10));
 const enemy = new Computer(new GameBoard(10));
-
-// let playerTurn = true;
 
 //only let user play the game after placing all their ships.
 // attacking logic from UI
@@ -37,7 +42,10 @@ directionButton.addEventListener('click', () =>
 );
 
 gameBoard2.addEventListener('click', (e) => {
-  //   if (!playerTurn) return;
+  if (!playerStart) {
+    alert('placeeeee at least one ship and click start button');
+    return;
+  }
   if (!player.gameBoard.isFleetAllSunk() && !enemy.gameBoard.isFleetAllSunk()) {
     if (
       e.target instanceof HTMLElement &&
@@ -109,16 +117,12 @@ draggables.forEach((draggable) => {
       );
       enemy.gameBoard.randomPlacingShips(new Ship(shipLength));
       displayOurShips(playerCells, player.gameBoard.map);
-      // create a resetStatesAfterDrop function
 
       resetAfterDrop(e.target);
     } else {
       draggable.classList.remove('dragging');
       resetAfterDropWithNoInput();
     }
-    // if destination when the mouse up  is not ship-cell return
-    // player.gameBoard.placeShip(xCor,yCor,new Ship(),direction)
-    // else {  draggable.classList.remove('dragging'); }
   });
 });
 gameBoard1.addEventListener('dragover', (e) => {
