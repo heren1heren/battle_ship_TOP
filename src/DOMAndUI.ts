@@ -70,15 +70,26 @@ export function displayOurShips(
     }
     cellArray[i].push(cell); // it doesn't seem to be a convention way
   });
-  console.log(cellArray); // obtain cellArray
+  // console.log(cellArray); // obtain cellArray
 
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 10; j++) {
       if (ourMap[i][j] === 'empty') {
       } else if (ourMap[i][j] instanceof Ship) {
-        console.log([i, j]);
+        // console.log([i, j]);
         cellArray[i][j].classList.add('our-ship-color');
       }
     }
+  }
+}
+
+//the function to toggle vertical placement-ships vs horizontal
+export function changeDirection(shipsPlacement: Element) {
+  if (shipsPlacement.classList.contains('ships-placement-horizontal')) {
+    shipsPlacement.classList.remove('ships-placement-horizontal');
+    shipsPlacement.classList.add('ships-placement-vertical');
+  } else {
+    shipsPlacement.classList.remove('ships-placement-vertical');
+    shipsPlacement.classList.add('ships-placement-horizontal');
   }
 }

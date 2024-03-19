@@ -201,35 +201,7 @@ body {
 				}
 			}
 		}
-		.ships-placement {
-			height: 200px;
-			width: 200px;
-			display: flex;
-			flex-direction: column;
-			align-items: flex-start;
-			justify-content: center;
-			gap: 20px;
-			margin-left: -20px;
-			margin-top: 30px;
-			align-self: flex-start;
-			background-color: wheat;
-			list-style: none;
-			font-size: 20px;
 
-			li {
-				cursor: pointer;
-				display: flex;
-				flex-direction: row;
-				gap: 1px;
-				.ship-cell {
-					width: 20px;
-					height: 20px;
-					border: 1px solid black;
-					background-color: aqua;
-					opacity: 0.8;
-				}
-			}
-		}
 		.ships-placement-horizontal {
 			height: 200px;
 			width: 200px;
@@ -258,6 +230,12 @@ body {
 					opacity: 0.8;
 				}
 			}
+		}
+		li.draggable {
+			cursor: move;
+		}
+		li.dragging {
+			opacity: 0.5;
 		}
 		.ships-placement-vertical {
 			height: 200px;
@@ -288,36 +266,14 @@ body {
 					opacity: 0.8;
 				}
 			}
-		}
-		.ships-placement {
-			height: 200px;
-			width: 200px;
-			display: flex;
-			flex-direction: column;
-			align-items: flex-start;
-			justify-content: center;
-			gap: 20px;
-			margin-left: -20px;
-			margin-top: 30px;
-			align-self: flex-start;
-			background-color: wheat;
-			list-style: none;
-			font-size: 20px;
-
-			li {
-				cursor: pointer;
-				display: flex;
-				flex-direction: row;
-				gap: 1px;
-				.ship-cell {
-					width: 20px;
-					height: 20px;
-					border: 1px solid black;
-					background-color: aqua;
-					opacity: 0.8;
-				}
+			li.draggable {
+				cursor: move;
+			}
+			li.dragging {
+				opacity: 0.5;
 			}
 		}
+
 		#enemy-section {
 			display: flex;
 			flex-direction: column;

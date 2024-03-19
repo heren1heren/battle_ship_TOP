@@ -8,10 +8,13 @@ import {
   computerMarkingAttack,
   checkingAndDisplayingAnnouncement,
   displayOurShips,
+  changeDirection,
 } from './DOMAndUI';
 const gameBoard1 = document.querySelector('#gameboard1');
 const gameBoard2 = document.querySelector('#gameboard2');
+const shipsPlacement = document.querySelector('#ships-placement');
 
+const directionButton = document.querySelector('.direction-button');
 for (let i = 0; i <= 9; i++) {
   for (let j = 0; j <= 9; j++) {
     const cell1 = document.createElement('div');
@@ -46,6 +49,11 @@ enemy.gameBoard.randomPlacingShips(new Ship(2));
 //only let user play the game after placing all their ships.
 // attacking logic from UI
 displayOurShips(playerCells, player.gameBoard.map);
+//button to change direction.
+directionButton.addEventListener('click', () =>
+  changeDirection(shipsPlacement)
+);
+
 gameBoard2.addEventListener('click', (e) => {
   //   if (!playerTurn) return;
   if (!player.gameBoard.isFleetAllSunk() && !enemy.gameBoard.isFleetAllSunk()) {
@@ -75,26 +83,34 @@ gameBoard2.addEventListener('click', (e) => {
 
 //* what to do right now:
 
-const shipsPlacement = document.querySelector('#ships-placement');
-console.log(shipsPlacement);
-const directionButton = document.querySelector('.direction-button');
-directionButton.addEventListener('click', () => {
-  if (shipsPlacement.classList.contains('ships-placement-horizontal')) {
-    console.log('passed');
-    console.log(shipsPlacement.classList);
+const draggables = document.querySelectorAll('.draggable');
 
-    shipsPlacement.classList.remove('ship-placement-horizontal');
-    shipsPlacement.classList.add('ship-placement-vertical');
-  } else {
-    console.log('passedz');
+draggables.forEach((draggable) => {
+  draggable.addEventListener('dragstart', () => {
+    console.log(draggable);
+    draggable.classList.add('dragging');
+  });
+  draggable.addEventListener('dragend', () =>
+    draggable.classList.remove('dragging')
+  );
+});
+gameBoard1.addEventListener('dragover', (e) => {
+  // now display corresponding coordinate while dragging
+  const HTMLElement = e.target;
 
-    shipsPlacement.classList.remove('ship-placement-vertical');
-    shipsPlacement.classList.add('ship-placement-horizontal');
+  if (HTMLElement.classList.contains('gameboard1-cell')) {
+    const xCor = +e.target.dataset.cell.split(',')[0];
+    const yCor = +e.target.dataset.cell.split(',')[1];
+    console.log(xCor);
+    console.log(yCor);
   }
 });
+// how can we prevent the player from dropping the ships outside gameboard container?
+//
+// we need to always update ships image inside player gameboard while the player drag or after dropping
 /***
- * create a div that contain ships for user to drag
- * *link the button to change direction of ships-placement div
- *  let user choose coordinate by type in or dragging
+ *
+ * *
+ *  let user choose coordinate by  dragging by using 'dragStart' and 'dragover'
  *  reviewing old code -> making it a better version by refactoring , decoupling.
  */
