@@ -79,8 +79,30 @@ gameBoard2.addEventListener('click', (e) => {
   }
 });
 
+console.log(player.gameBoard.map);
+
+const cellArray: HTMLElement[][] = [[], [], [], [], [], [], [], [], [], []];
+let i = 0;
+playerCells.forEach((cell, index) => {
+  if (index % 10 === 0 && index !== 0) {
+    i++;
+  }
+  cellArray[i].push(cell); // it doesn't seem to be a convention way
+});
+console.log(cellArray); // obtain cellArray
+
+for (let i = 0; i < 10; i++) {
+  for (let j = 0; j < 10; j++) {
+    if (player.gameBoard.map[i][j] === 'empty') {
+    } else if (player.gameBoard.map[i][j] instanceof Ship) {
+      console.log([i, j]);
+      cellArray[i][j].classList.add('our-ship-color');
+    }
+  }
+}
 //* what to do right now:
 /***
+ * display ships in our board (solve)
  *  let user choose coordinate by type in or dragging
  *  reviewing old code -> making it a better version by refactoring , decoupling.
  */

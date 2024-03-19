@@ -20,7 +20,7 @@ export function computerMarkingAttack(
   computerMap: Computer['hitMap'],
   playerGameboardCells: NodeList
 ) {
-  const cellArray: HTMLElement[][] = [[], [], [], [], [], [], [], [], [], []];
+  const cellArray: Node[][] = [[], [], [], [], [], [], [], [], [], []];
   let i = 0;
   playerGameboardCells.forEach((cell, index) => {
     if (index % 10 === 0 && index !== 0) {
@@ -55,3 +55,5 @@ export function checkingAndDisplayingAnnouncement(
       ' you lose yourself, hence you win yourself. ';
   }
 }
+
+// create a function to display color blue for our ship
