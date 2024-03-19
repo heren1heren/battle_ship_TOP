@@ -32,8 +32,30 @@ for (let i = 0; i <= 9; i++) {
     gameBoard2.append(cell2);
   }
 }
-const playerCells = document.querySelectorAll('.gameboard1-cell');
-// const turnAnnouncement = document.querySelector('.turn-announcement');
+// should create a function to convert these below
+const playerCells = [...document.querySelectorAll('.gameboard1-cell')];
+const playerCellsArr: HTMLElement[][] = [
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [],
+];
+// const  turnAnnouncement = document.querySelector('.turn-announcement');
+let count = 0;
+playerCells.forEach((cell, index) => {
+  if (index % 10 === 0 && index !== 0) {
+    count++;
+  }
+  playerCellsArr[count].push(cell);
+});
+// console.log(playerCellsArr);
+
 const player = new Player(new GameBoard(10));
 
 const enemy = new Computer(new GameBoard(10));
@@ -95,15 +117,15 @@ draggables.forEach((draggable) => {
     'dragend',
     () => draggable.classList.remove('dragging')
     // call placing ship function in here. for player
+    // if destination is not ship-cell return
     // player.gameBoard.placeShip(xCor,yCor,new Ship(),direction)
+    //
   );
 });
 gameBoard1.addEventListener('dragover', (e) => {
   const HTMLElement = e.target;
-  let direction;
-  const shipLength = currentDraggedObject.dataset.length;
-  console.log(shipLength);
-
+  const shipLength = +currentDraggedObject.dataset.length;
+  let direction: 'vertical' | 'horizontal';
   if (
     currentDraggedObject.parentElement.classList.contains(
       'ships-placement-vertical'
@@ -114,18 +136,66 @@ gameBoard1.addEventListener('dragover', (e) => {
     direction = 'horizontal';
   }
   if (HTMLElement.classList.contains('gameboard1-cell')) {
-    const xCor = +e.target.dataset.cell.split(',')[0];
-    const yCor = +e.target.dataset.cell.split(',')[1];
-    console.log(xCor);
-    console.log(yCor);
-    console.log(direction);
+    let xCor = +e.target.dataset.cell.split(',')[1];
+    let yCor = +e.target.dataset.cell.split(',')[0];
+    // using condition statement to only toggle off empty cell
+    // by reseting all the cell before apply color ->you toggle off.
+    playerCells.forEach((cell) => {
+      cell.classList.remove('dragging-ship-color');
+    });
+    playerCellsArr[yCor][xCor].classList.add('dragging-ship-color');
+    // create a function to return correct direction based on xCor,yCor, and input direction
+    const dynamicDirection = returnDynamicDirection(
+      direction,
+      xCor,
+      yCor,
+      shipLength
+    );
 
-    // now we need to extract 'direction from li.classlist if..else statement
-    // how to access current draggable here ?
+    for (let i = 0; i < shipLength; i++) {
+      if (dynamicDirection === 'horizontal right') {
+        playerCellsArr[yCor][xCor].classList.add('dragging-ship-color');
+        xCor++;
+      } else if (dynamicDirection === 'horizontal left') {
+        playerCellsArr[yCor][xCor].classList.add('dragging-ship-color');
+        xCor--;
+        //
+      } else if (dynamicDirection === 'vertical down') {
+        playerCellsArr[yCor][xCor].classList.add('dragging-ship-color');
+        yCor++;
+        //
+      } else if (dynamicDirection === 'vertical up') {
+        playerCellsArr[yCor][xCor].classList.add('dragging-ship-color');
+        yCor--;
+        //
+      }
+    }
     // displayShipWhileDragging(xCor, yCor, length, direction);
+    //toggle color for current cell
   }
 });
+function returnDynamicDirection(
+  direction: 'horizontal' | 'vertical',
+  xCor: number,
+  yCor: number,
+  shipLength: number
+) {
+  //
+  if (direction === 'horizontal' && xCor - 1 + shipLength > 9) {
+    return 'horizontal left';
+  } else if (direction === 'horizontal') {
+    return 'horizontal right';
+  }
+  if (direction === 'vertical' && yCor - 1 + shipLength > 9) {
+    console.log(yCor + shipLength);
 
+    return 'vertical up';
+  } else {
+    console.log(yCor + shipLength);
+
+    return 'vertical down';
+  }
+}
 function displayShipWhileDragging(
   xCor: number,
   yCor: number,
