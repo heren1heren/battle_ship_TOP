@@ -1,4 +1,5 @@
 import { Computer, Player } from './playerComponent';
+import Ship from './shipComponent';
 export function markingAttack(
   target: Computer,
   elementTarget: HTMLElement,
@@ -57,3 +58,27 @@ export function checkingAndDisplayingAnnouncement(
 }
 
 // create a function to display color blue for our ship
+export function displayOurShips(
+  playerGameboardCells: NodeList,
+  ourMap: Array<Ship | 'empty' | 'missingAttack'>[]
+) {
+  const cellArray: HTMLElement[][] = [[], [], [], [], [], [], [], [], [], []];
+  let i = 0;
+  playerGameboardCells.forEach((cell: HTMLElement, index: number) => {
+    if (index % 10 === 0 && index !== 0) {
+      i++;
+    }
+    cellArray[i].push(cell); // it doesn't seem to be a convention way
+  });
+  console.log(cellArray); // obtain cellArray
+
+  for (let i = 0; i < 10; i++) {
+    for (let j = 0; j < 10; j++) {
+      if (ourMap[i][j] === 'empty') {
+      } else if (ourMap[i][j] instanceof Ship) {
+        console.log([i, j]);
+        cellArray[i][j].classList.add('our-ship-color');
+      }
+    }
+  }
+}

@@ -7,6 +7,7 @@ import {
   markingAttack,
   computerMarkingAttack,
   checkingAndDisplayingAnnouncement,
+  displayOurShips,
 } from './DOMAndUI';
 const gameBoard1 = document.querySelector('#gameboard1');
 const gameBoard2 = document.querySelector('#gameboard2');
@@ -29,7 +30,7 @@ for (let i = 0; i <= 9; i++) {
   }
 }
 const playerCells = document.querySelectorAll('.gameboard1-cell');
-const turnAnnouncement = document.querySelector('.turn-announcement');
+// const turnAnnouncement = document.querySelector('.turn-announcement');
 const player = new Player(new GameBoard(10));
 
 const enemy = new Computer(new GameBoard(10));
@@ -40,9 +41,11 @@ player.gameBoard.randomPlacingShips(new Ship(2));
 enemy.gameBoard.randomPlacingShips(new Ship(4));
 enemy.gameBoard.randomPlacingShips(new Ship(3));
 enemy.gameBoard.randomPlacingShips(new Ship(2));
-
-// attacking logic from UI
 // let playerTurn = true;
+
+//only let user play the game after placing all their ships.
+// attacking logic from UI
+displayOurShips(playerCells, player.gameBoard.map);
 gameBoard2.addEventListener('click', (e) => {
   //   if (!playerTurn) return;
   if (!player.gameBoard.isFleetAllSunk() && !enemy.gameBoard.isFleetAllSunk()) {
@@ -58,16 +61,7 @@ gameBoard2.addEventListener('click', (e) => {
       const yCor = +e.target.dataset.cell.split(',')[0];
 
       player.playTurn(enemy, xCor, yCor);
-      // autoplay from computer
-      //   turnAnnouncement.textContent = 'Computer Turn:';
-      // change turn-announcement here:
-      // ?  setTimeout(() => { // setTimeout does not work here
-      //     // consider another way to do so
-      //     turnAnnouncement.textContent = 'Player Turn:';
-      //     enemy.play(player); // doesn't execute the first time and from the second time
-      //     // the pausing time does not matter, enemy.play(player) always executes instantly
-      //     playerTurn = true;
-      //   }, Math.random() * 5000);
+
       enemy.play(player);
       // displayEffect of attacking
       markingAttack(enemy, e.target, xCor, yCor);
@@ -79,30 +73,28 @@ gameBoard2.addEventListener('click', (e) => {
   }
 });
 
-console.log(player.gameBoard.map);
-
-const cellArray: HTMLElement[][] = [[], [], [], [], [], [], [], [], [], []];
-let i = 0;
-playerCells.forEach((cell, index) => {
-  if (index % 10 === 0 && index !== 0) {
-    i++;
-  }
-  cellArray[i].push(cell); // it doesn't seem to be a convention way
-});
-console.log(cellArray); // obtain cellArray
-
-for (let i = 0; i < 10; i++) {
-  for (let j = 0; j < 10; j++) {
-    if (player.gameBoard.map[i][j] === 'empty') {
-    } else if (player.gameBoard.map[i][j] instanceof Ship) {
-      console.log([i, j]);
-      cellArray[i][j].classList.add('our-ship-color');
-    }
-  }
-}
 //* what to do right now:
+
+const shipsPlacement = document.querySelector('#ships-placement');
+console.log(shipsPlacement);
+const directionButton = document.querySelector('.direction-button');
+directionButton.addEventListener('click', () => {
+  if (shipsPlacement.classList.contains('ships-placement-horizontal')) {
+    console.log('passed');
+    console.log(shipsPlacement.classList);
+
+    shipsPlacement.classList.remove('ship-placement-horizontal');
+    shipsPlacement.classList.add('ship-placement-vertical');
+  } else {
+    console.log('passedz');
+
+    shipsPlacement.classList.remove('ship-placement-vertical');
+    shipsPlacement.classList.add('ship-placement-horizontal');
+  }
+});
 /***
- * display ships in our board (solve)
+ * create a div that contain ships for user to drag
+ * *link the button to change direction of ships-placement div
  *  let user choose coordinate by type in or dragging
  *  reviewing old code -> making it a better version by refactoring , decoupling.
  */
