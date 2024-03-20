@@ -94,7 +94,8 @@ draggables.forEach((draggable) => {
   draggable.addEventListener('dragend', () =>
     draggable.classList.remove('dragging')
     // call placing ship function in here. for player
-    player.gameBoard.placeShip(xCor,yCor,new Ship(),direction)
+    // player.gameBoard.placeShip(xCor,yCor,new Ship(),direction)
+    //remove draggable class if and only  if the dragend happens inside gameboard.
   );
 });
 gameBoard1.addEventListener('dragover', (e) => {
