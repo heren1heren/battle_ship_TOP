@@ -157,6 +157,16 @@ export function returnDynamicDirection(
     return 'vertical down';
   }
 }
+
+export function resetDisplayAfterMouseOutOrAfterDropShips(
+  gameBoardCell: HTMLElement[][]
+) {
+  gameBoardCell.forEach((cellArray) => {
+    cellArray.forEach((cell) => {
+      cell.classList.remove('dragging-ship-color');
+    });
+  });
+}
 export function displayShipWhileDragging(
   xCor: number,
   yCor: number,

@@ -13,6 +13,7 @@ import {
   returnDynamicDirection,
   populatingInsideGameBoard,
   returnCellArrayFromAnArray,
+  resetDisplayAfterMouseOutOrAfterDropShips,
 } from './DOMAndUI';
 type basicDirection = 'vertical' | 'horizontal';
 const gameBoard1 = document.querySelector('#gameboard1');
@@ -22,6 +23,10 @@ const directionButton = document.querySelector('.direction-button');
 const startButton = document.querySelector('.start-button');
 let playerStart = false;
 startButton.addEventListener('click', (e) => {
+  if (!player.gameBoard.hasAtLeastAShip()) {
+    alert('you need to place at least one ship to start');
+    return;
+  }
   e.preventDefault();
   playerStart = true;
   shipsPlacement.style.cssText = 'display:none';
@@ -34,18 +39,16 @@ const playerCellsArr = returnCellArrayFromAnArray(playerCells);
 const player = new Player(new GameBoard(10));
 const enemy = new Computer(new GameBoard(10));
 
-//only let user play the game after placing all their ships.
-// attacking logic from UI
-//button to change direction.
 directionButton.addEventListener('click', () =>
   changeDirection(shipsPlacement)
 );
 
 gameBoard2.addEventListener('click', (e) => {
   if (!playerStart) {
-    alert('placeeeee at least one ship and click start button');
+    alert(' place ships and click the  start button to play.');
     return;
   }
+
   if (!player.gameBoard.isFleetAllSunk() && !enemy.gameBoard.isFleetAllSunk()) {
     if (
       e.target instanceof HTMLElement &&
@@ -148,6 +151,11 @@ gameBoard1.addEventListener('dragover', (e) => {
     // using condition statement to only toggle off empty cell
     // by reseting all the cell before apply color ->you toggle off.
   }
+});
+
+gameBoard1.addEventListener('mouseleave', (e) => {
+  resetDisplayAfterMouseOutOrAfterDropShips(playerCellsArr);
+  console.log(playerCellsArr);
 });
 function resetAfterDrop(deletingElement: HTMLElement) {
   destination = undefined;
