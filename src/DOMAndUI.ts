@@ -1,20 +1,9 @@
 import { Computer, Player } from './playerComponent';
 import Ship from './shipComponent';
 //* extracting logic functions to extract from Document web page
-export function returnCellArrayFromAnArray(array: HTMLElement[]) {
+export function returnCellArrayFromAnArray(array: Element[]) {
   //
-  const playerCellsArr: HTMLElement[][] = [
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-  ];
+  const playerCellsArr: Element[][] = [[], [], [], [], [], [], [], [], [], []];
   let count = 0;
   array.forEach((cell, index) => {
     if (index % 10 === 0 && index !== 0) {
@@ -159,7 +148,7 @@ export function returnDynamicDirection(
 }
 
 export function resetDisplayAfterMouseOutOrAfterDropShips(
-  gameBoardCell: HTMLElement[][]
+  gameBoardCell: Element[][]
 ) {
   gameBoardCell.forEach((cellArray) => {
     cellArray.forEach((cell) => {
@@ -172,7 +161,7 @@ export function displayShipWhileDragging(
   yCor: number,
   length: number,
   direction: 'horizontal' | 'vertical',
-  gameBoardCell: HTMLElement[][]
+  gameBoardCell: Element[][]
 ) {
   gameBoardCell.forEach((cellArray) => {
     cellArray.forEach((cell) => {
