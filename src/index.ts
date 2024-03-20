@@ -18,7 +18,7 @@ import {
 type basicDirection = 'vertical' | 'horizontal';
 const gameBoard1 = document.querySelector('#gameboard1');
 const gameBoard2 = document.querySelector('#gameboard2');
-const shipsPlacement = document.querySelector('#ships-placement');
+const shipsPlacement = document.querySelector<HTMLElement>('#ships-placement'); // fixed ts bug
 const directionButton = document.querySelector('.direction-button');
 const startButton = document.querySelector('.start-button');
 let playerStart = false;
@@ -34,7 +34,9 @@ startButton.addEventListener('click', (e) => {
 populatingInsideGameBoard(gameBoard1, 'gameboard1-cell');
 populatingInsideGameBoard(gameBoard2, 'gameboard2-cell');
 
-const playerCells = [...document.querySelectorAll('.gameboard1-cell')];
+const playerCells: Element[] = [
+  ...document.querySelectorAll('.gameboard1-cell'),
+];
 const playerCellsArr = returnCellArrayFromAnArray(playerCells);
 const player = new Player(new GameBoard(10));
 const enemy = new Computer(new GameBoard(10));
@@ -73,8 +75,6 @@ gameBoard2.addEventListener('click', (e) => {
     }
   }
 });
-
-//* what to do right now:
 
 const draggables = document.querySelectorAll('.draggable');
 let currentDraggedObject: Element;
@@ -130,8 +130,8 @@ draggables.forEach((draggable) => {
 });
 gameBoard1.addEventListener('dragover', (e) => {
   displayOurShips(playerCells, player.gameBoard.map);
-  const HTMLElement = e.target; // review code latter
-  const shipLength = +currentDraggedObject.dataset.length; // review code latter
+  const HTMLElement: HTMLElement = e.target;
+  const shipLength = +currentDraggedObject.dataset.length;
   destination = e.target;
   let direction: 'vertical' | 'horizontal';
   if (
@@ -144,19 +144,21 @@ gameBoard1.addEventListener('dragover', (e) => {
     direction = 'horizontal';
   }
   if (HTMLElement.classList.contains('gameboard1-cell')) {
-    let xCor = +e.target.dataset.cell.split(',')[1];
-    let yCor = +e.target.dataset.cell.split(',')[0];
+    let xCor = +HTMLElement.dataset.cell.split(',')[1];
+    let yCor = +HTMLElement.dataset.cell.split(',')[0];
     displayShipWhileDragging(xCor, yCor, shipLength, direction, playerCellsArr);
-
-    // using condition statement to only toggle off empty cell
-    // by reseting all the cell before apply color ->you toggle off.
   }
 });
 
+<<<<<<< HEAD
 gameBoard1.addEventListener('mouseleave', (e) => {
   // mouseleave doesn't work
   resetDisplayAfterMouseOutOrAfterDropShips(playerCellsArr);
   // console.log(playerCellsArr);
+=======
+gameBoard1.addEventListener('mouseleave', () => {
+  resetDisplayAfterMouseOutOrAfterDropShips(playerCellsArr);
+>>>>>>> pcBranch
 });
 function resetAfterDrop(deletingElement: HTMLElement) {
   destination = undefined;
@@ -165,14 +167,15 @@ function resetAfterDrop(deletingElement: HTMLElement) {
 function resetAfterDropWithNoInput() {
   destination = undefined;
 }
-// how can we prevent the player from dropping the ships outside gameboard container?
-//
-// we need to always update ships image inside player gameboard while the player drag or after dropping
-/***
+/** 
  *
  *
+<<<<<<< HEAD
  
  
+=======
+
+>>>>>>> pcBranch
  * * currently reorganizing the code (postponed)
  
  *

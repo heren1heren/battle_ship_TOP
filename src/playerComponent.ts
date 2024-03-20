@@ -156,3 +156,5 @@ export class Computer {
     opponent.gameBoard.receiveAttack(xCor, yCor);
   }
 }
+
+// AI doesn't work. I don't want to fix it either.
