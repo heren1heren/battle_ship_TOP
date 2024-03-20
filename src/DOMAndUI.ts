@@ -1,5 +1,45 @@
 import { Computer, Player } from './playerComponent';
 import Ship from './shipComponent';
+//* extracting logic functions to extract from Document web page
+export function returnCellArrayFromAnArray(array: HTMLElement[]) {
+  //
+  const playerCellsArr: HTMLElement[][] = [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+  ];
+  let count = 0;
+  array.forEach((cell, index) => {
+    if (index % 10 === 0 && index !== 0) {
+      count++;
+    }
+    playerCellsArr[count].push(cell);
+  });
+  return playerCellsArr;
+}
+
+export function populatingInsideGameBoard(
+  gameBoard: Element,
+  cellClass: string
+) {
+  for (let i = 0; i <= 9; i++) {
+    for (let j = 0; j <= 9; j++) {
+      const cell = document.createElement('div');
+      cell.classList.add(cellClass);
+      cell.dataset.cell = `${i},${j}`;
+      gameBoard.append(cell);
+    }
+  }
+}
+
+//* function for marking logic
 export function markingAttack(
   target: Computer,
   elementTarget: HTMLElement,
@@ -15,7 +55,6 @@ export function markingAttack(
     elementTarget.classList.add('correct-attack');
   }
 }
-
 export function computerMarkingAttack(
   // renovating it later
   computerMap: Computer['hitMap'],
@@ -41,6 +80,7 @@ export function computerMarkingAttack(
     }
   }
 }
+//* function for announcement
 export function checkingAndDisplayingAnnouncement(
   player: Player,
   enemy: Computer
@@ -57,7 +97,7 @@ export function checkingAndDisplayingAnnouncement(
   }
 }
 
-// create a function to display color blue for our ship
+//* create a function to display color blue for our ship
 export function displayOurShips(
   playerGameboardCells: NodeList,
   ourMap: Array<Ship | 'empty' | 'missingAttack'>[]
@@ -91,5 +131,68 @@ export function changeDirection(shipsPlacement: Element) {
   } else {
     shipsPlacement.classList.remove('ships-placement-vertical');
     shipsPlacement.classList.add('ships-placement-horizontal');
+  }
+}
+
+// displaying while dragging functions
+export function returnDynamicDirection(
+  direction: 'horizontal' | 'vertical',
+  xCor: number,
+  yCor: number,
+  shipLength: number
+) {
+  //
+  if (direction === 'horizontal' && xCor - 1 + shipLength > 9) {
+    return 'horizontal left';
+  } else if (direction === 'horizontal') {
+    return 'horizontal right';
+  }
+  if (direction === 'vertical' && yCor - 1 + shipLength > 9) {
+    console.log(yCor + shipLength);
+
+    return 'vertical up';
+  } else {
+    console.log(yCor + shipLength);
+
+    return 'vertical down';
+  }
+}
+export function displayShipWhileDragging(
+  xCor: number,
+  yCor: number,
+  length: number,
+  direction: 'horizontal' | 'vertical',
+  gameBoardCell: HTMLElement[][]
+) {
+  gameBoardCell.forEach((cellArray) => {
+    cellArray.forEach((cell) => {
+      cell.classList.remove('dragging-ship-color');
+    });
+  });
+  gameBoardCell[yCor][xCor].classList.add('dragging-ship-color');
+  // create a function to return correct direction based on xCor,yCor, and input direction
+  const dynamicDirection = returnDynamicDirection(
+    direction,
+    xCor,
+    yCor,
+    length
+  );
+  for (let i = 0; i < length; i++) {
+    if (dynamicDirection === 'horizontal right') {
+      gameBoardCell[yCor][xCor].classList.add('dragging-ship-color');
+      xCor++;
+    } else if (dynamicDirection === 'horizontal left') {
+      gameBoardCell[yCor][xCor].classList.add('dragging-ship-color');
+      xCor--;
+      //
+    } else if (dynamicDirection === 'vertical down') {
+      gameBoardCell[yCor][xCor].classList.add('dragging-ship-color');
+      yCor++;
+      //
+    } else if (dynamicDirection === 'vertical up') {
+      gameBoardCell[yCor][xCor].classList.add('dragging-ship-color');
+      yCor--;
+      //
+    }
   }
 }
