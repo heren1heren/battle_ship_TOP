@@ -148,11 +148,11 @@ export function returnDynamicDirection(
     return 'horizontal right';
   }
   if (direction === 'vertical' && yCor - 1 + shipLength > 9) {
-    console.log(yCor + shipLength);
+    // console.log(yCor + shipLength);
 
     return 'vertical up';
   } else {
-    console.log(yCor + shipLength);
+    // console.log(yCor + shipLength);
 
     return 'vertical down';
   }

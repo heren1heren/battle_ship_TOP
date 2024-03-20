@@ -154,8 +154,9 @@ gameBoard1.addEventListener('dragover', (e) => {
 });
 
 gameBoard1.addEventListener('mouseleave', (e) => {
+  // mouseleave doesn't work
   resetDisplayAfterMouseOutOrAfterDropShips(playerCellsArr);
-  console.log(playerCellsArr);
+  // console.log(playerCellsArr);
 });
 function resetAfterDrop(deletingElement: HTMLElement) {
   destination = undefined;
@@ -170,12 +171,10 @@ function resetAfterDropWithNoInput() {
 /***
  *
  *
- ** implementing the condition when player can start to play the game
- ** create a start button that will let the user start the game.
+ 
+ 
  * * currently reorganizing the code (postponed)
- * * start to let player play the game after player click the button play.
- * *-> delete ship-placement, delete the start button
- * * -> determine how many ships player have placed -> random the same ships for computer.
+ 
  *
  * * AI smart move doesn't work -> check it out again.
  *  *reviewing old code -> making it a better version by refactoring , decoupling.
